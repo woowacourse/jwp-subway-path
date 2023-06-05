@@ -1,12 +1,15 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
+import subway.dao.entity.StationEntity;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
+import subway.exception.NotFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -19,34 +22,46 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         checkDuplicatedStationName(stationRequest);
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
+        return StationResponse.of(Station.from(station));
     }
 
     public StationResponse findStationResponseById(Long id) {
-        Station station = stationDao.findById(id).orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
-        return StationResponse.of(station);
+        StationEntity station = stationDao.findById(id)
+                                          .orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
+        return StationResponse.of(Station.from(station));
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
+
+        List<Station> stations = stationEntities.stream()
+                                                .map(Station::from)
+                                                .collect(Collectors.toList());
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                       .map(StationResponse::of)
+                       .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(new StationEntity(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
+        isExist(id);
         stationDao.deleteById(id);
     }
 
-    private void  checkDuplicatedStationName(StationRequest stationRequest) {
-        if (stationDao.findByName(stationRequest.getName()).isPresent()) {
+    private void checkDuplicatedStationName(StationRequest stationRequest) {
+        if (stationDao.isExistName(stationRequest.getName())) {
             throw new IllegalArgumentException("이미 존재하는 역 이름 입니다");
+        }
+    }
+
+    private void isExist(Long id) {
+        if (stationDao.isExistId(id)) {
+            throw new NotFoundException("해당 역은 존재하지 않습니다.");
         }
     }
 }

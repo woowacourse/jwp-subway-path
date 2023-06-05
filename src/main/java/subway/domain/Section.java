@@ -1,17 +1,46 @@
 package subway.domain;
 
+import subway.dao.vo.SectionStationMapper;
+
 import java.util.Objects;
 
 public class Section {
 
+    private final Long id;
     private final Station upStation;
     private final Station downStation;
     private final Integer distance;
 
-    public Section(Station upStation, Station downStation, Integer distance) {
+    private Section(Long id, Station upStation, Station downStation, Integer distance) {
+        this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section from(SectionStationMapper sectionStationMapper) {
+        return new Section(
+                sectionStationMapper.getId(),
+                Station.of(sectionStationMapper.getUpStationId(), sectionStationMapper.getUpStationName()),
+                Station.of(sectionStationMapper.getDownStationId(), sectionStationMapper.getDownStationName()),
+                sectionStationMapper.getDistance()
+        );
+    }
+
+    public static Section of(Long id, Station upStation, Station downStation, Integer distance) {
+        return new Section(id, upStation, downStation, distance);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 
     public Station getUpStation() {
@@ -42,5 +71,14 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(upStation, downStation, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }

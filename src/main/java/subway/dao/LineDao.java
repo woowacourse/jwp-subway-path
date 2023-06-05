@@ -1,31 +1,34 @@
 package subway.dao;
 
-import java.util.Optional;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import subway.domain.Line;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(NamedParameterJdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
@@ -43,34 +46,26 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "SELECT id, name, color FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    //todo 찾아볼 것 : queryForObject이 null을 반환하는 경우가 무엇인지?
     public Optional<LineEntity> findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "SELECT id, name, color FROM line WHERE id = :id";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(sql, source, rowMapper));
         }
         catch (DataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public void update(LineEntity newLineEntity) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
-    }
-
     public Optional<LineEntity> findByName(String name) {
-        String sql = "select id, name, color from LINE WHERE name = ?";
+        String sql = "SELECT id, name, color FROM line WHERE name = :name";
+        SqlParameterSource source = new MapSqlParameterSource("name", name);
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+            return Optional.of(jdbcTemplate.queryForObject(sql, source, rowMapper));
         }
         catch (DataAccessException e) {
             return Optional.empty();
@@ -78,12 +73,44 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByColor(String color) {
-        String sql = "select id, name, color from LINE WHERE color = ?";
+        String sql = "SELECT id, name, color FROM line WHERE color = :color";
+        SqlParameterSource source = new MapSqlParameterSource("color", color);
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, color));
+            return Optional.of(jdbcTemplate.queryForObject(sql, source, rowMapper));
         }
         catch (DataAccessException e) {
             return Optional.empty();
         }
     }
+
+    public void update(LineEntity newLineEntity) {
+        String sql = "UPDATE line SET name = :name, color = :color WHERE id = :id";
+        SqlParameterSource source = new BeanPropertySqlParameterSource(newLineEntity);
+        jdbcTemplate.update(sql, source);
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM line WHERE id = :id";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
+        jdbcTemplate.update(sql, source);
+    }
+
+    public boolean isExistId(Long id) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE id = :id)";
+        SqlParameterSource source = new MapSqlParameterSource("id", id);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
+    public boolean isExistName(String name) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE name = :name)";
+        SqlParameterSource source = new MapSqlParameterSource("name", name);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
+    public boolean isExistColor(String color) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM line WHERE color = :color)";
+        SqlParameterSource source = new MapSqlParameterSource("color", color);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
 }

@@ -13,12 +13,12 @@ create table if not exists LINE
     primary key(id)
 );
 
---//todo 물어볼 것 : 기본 키 id를 없애도 되는지?
 create table if not exists SECTION
 (
-    line_id            bigint    not null      references line(id)        on delete cascade,
-    up_station_id      bigint    not null      references station(id)     on delete cascade,
-    down_station_id    bigint    not null      references station(id)     on delete cascade,
-    distance           int       not null,
-    primary key(up_station_id, down_station_id)
+    id              bigint auto_increment not null,
+    line_id         bigint                not null references line (id) on delete cascade,
+    up_station_id   bigint                not null references station (id) on delete cascade,
+    down_station_id bigint                not null references station (id) on delete cascade,
+    distance        int                   not null,
+    primary key (id)
 );

@@ -1,30 +1,31 @@
 package subway.dao;
 
-import java.util.List;
-import java.util.Optional;
-import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.dao.entity.SectionEntity;
+import subway.dao.vo.SectionStationMapper;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class SectionDao {
 
-    private static final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
-                    new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
-                    new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-                    rs.getInt("distance")
-            );
+    private static final RowMapper<SectionStationMapper> sectionStationRowMapper = (rs, rowNum) ->
+            new SectionStationMapper(
+                    rs.getLong("id"),
+                    rs.getLong("up_station_id"),
+                    rs.getString("up_station_name"),
+                    rs.getLong("down_station_id"),
+                    rs.getString("down_station_name"),
+                    rs.getInt("distance"));
     private static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) ->
             new SectionEntity(
+                    rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("up_station_id"),
                     rs.getLong("down_station_id"),
@@ -37,26 +38,34 @@ public class SectionDao {
     public SectionDao(NamedParameterJdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("section");
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public List<Section> findSectionsByLineId(Long lineId) {
-        String sql = "SELECT up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
+    public List<SectionStationMapper> findAll() {
+        String sql = "SELECT s.id, up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
+                + "FROM SECTION AS s "
+                + "JOIN STATION AS up ON s.up_station_id = up.id "
+                + "JOIN STATION AS down ON s.down_station_id = down.id ";
+
+        return jdbcTemplate.query(sql, sectionStationRowMapper);
+    }
+
+    public List<SectionStationMapper> findSectionsByLineId(Long lineId) {
+        String sql = "SELECT s.id, up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
                 + "FROM SECTION AS s "
                 + "JOIN STATION AS up ON s.up_station_id = up.id "
                 + "JOIN STATION AS down ON s.down_station_id = down.id "
                 + "WHERE s.line_id = :line_id";
 
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("line_id", lineId);
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
 
-        return jdbcTemplate.query(sql, source, sectionRowMapper);
+        return jdbcTemplate.query(sql, source, sectionStationRowMapper);
     }
 
     public Optional<List<SectionEntity>> findByLineId(Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("line_id", lineId);
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.query(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -65,10 +74,9 @@ public class SectionDao {
     }
 
     public Optional<SectionEntity> findByUpStationId(Long upStationId, Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND up_station_id = :up_station_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("up_station_id", upStationId)
-                .addValue("line_id", lineId);
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND up_station_id = :up_station_id";
+        SqlParameterSource source = new MapSqlParameterSource().addValue("up_station_id", upStationId)
+                                                               .addValue("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -77,10 +85,9 @@ public class SectionDao {
     }
 
     public Optional<SectionEntity> findByDownStationId(Long downStationId, Long lineId) {
-        String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND down_station_id = :down_station_id";
-        SqlParameterSource source = new MapSqlParameterSource()
-                .addValue("down_station_id", downStationId)
-                .addValue("line_id", lineId);
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id AND down_station_id = :down_station_id";
+        SqlParameterSource source = new MapSqlParameterSource().addValue("down_station_id", downStationId)
+                                                               .addValue("line_id", lineId);
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, source, sectionEntityRowMapper));
         } catch (DataAccessException exception) {
@@ -88,14 +95,27 @@ public class SectionDao {
         }
     }
 
+    public boolean isEmptySectionByLine(Long lineId) {
+        String sql = "SELECT NOT EXISTS (SELECT 1 FROM section WHERE line_id = :line_id)";
+        SqlParameterSource source = new MapSqlParameterSource("line_id", lineId);
+        return jdbcTemplate.queryForObject(sql, source, Boolean.class);
+    }
+
     public void insert(SectionEntity sectionEntity) {
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         insertAction.execute(source);
     }
 
+    public void insertAll(List<SectionEntity> sectionEntities) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
+        String sql = "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) "
+                + "VALUES (:lineId, :upStationId, :downStationId, :distance)";
+        jdbcTemplate.batchUpdate(sql, batch);
+    }
+
     public void updateByUpStationId(SectionEntity sectionEntity) {
         String sql = "UPDATE SECTION SET down_station_id = :downStationId, distance = :distance "
-                + "WHERE line_id = :lineId AND up_station_id = :upStationId";
+                + "WHERE id = :id";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         jdbcTemplate.update(sql, source);
@@ -110,10 +130,15 @@ public class SectionDao {
     }
 
     public void delete(SectionEntity sectionEntity) {
-        String sql = "DELETE FROM SECTION WHERE up_station_id = :upStationId AND down_station_id = :downStationId";
+        String sql = "DELETE FROM SECTION WHERE id = :id";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         jdbcTemplate.update(sql, source);
     }
 
+    public void deleteAll(List<SectionEntity> sectionEntities) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sectionEntities.toArray());
+        String sql = "DELETE FROM SECTION WHERE id = :id";
+        jdbcTemplate.batchUpdate(sql, batch);
+    }
 }

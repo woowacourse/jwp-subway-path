@@ -1,14 +1,21 @@
 package subway.application;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
 import subway.dao.StationDao;
-import subway.dto.SectionRequest;
-import subway.exception.InvalidSectionException;
+import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.dto.request.SectionRequest;
+import subway.exception.NotFoundException;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SectionService {
@@ -30,141 +37,93 @@ public class SectionService {
         SectionEntity sectionEntity = new SectionEntity(lineId, sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId(), sectionRequest.getDistance());
 
-        if (isEmptyLine(lineId)) {
+        if (sectionDao.isEmptySectionByLine(lineId)) {
             sectionDao.insert(sectionEntity);
             return;
         }
-        saveSectionWhenLineIsNotEmpty(sectionEntity);
+        saveSectionWhenLineIsNotEmpty(lineId, sectionEntity);
     }
 
-    private boolean isEmptyLine(Long lineId) {
-        Optional<List<SectionEntity>> byLineId = sectionDao.findByLineId(lineId);
-        return byLineId.get().isEmpty();
+    private void saveSectionWhenLineIsNotEmpty(Long lineId, SectionEntity sectionToAdd) {
+        List<Section> findSections = getSectionsByLineId(lineId);
+        Set<Section> sectionsSnapshot = Set.copyOf(findSections);
+
+        Sections sections = new Sections(findSections);
+
+        Station upStation = convertToStation(sectionToAdd.getUpStationId());
+        Station downStation = convertToStation(sectionToAdd.getDownStationId());
+        sections.addSection(Section.of(sectionToAdd.getId(), upStation, downStation, sectionToAdd.getDistance()));
+
+        updateSection(lineId, sectionsSnapshot, sections);
     }
 
-    private void saveSectionWhenLineIsNotEmpty(SectionEntity sectionEntity) {
-        checkIfImpossibleSection(sectionEntity);
-        addStationBetweenStations(sectionEntity);
+    private List<Section> getSectionsByLineId(Long lineId) {
+        return sectionDao.findSectionsByLineId(lineId)
+                         .stream()
+                         .map(Section::from)
+                         .collect(Collectors.toList());
     }
 
-    private void checkIfImpossibleSection(SectionEntity sectionEntity) {
-        Long lineId = sectionEntity.getLineId();
-        Long upStationId = sectionEntity.getUpStationId();
-        Long downStationId = sectionEntity.getDownStationId();
-        boolean hasUpStationInLine = hasStationInLine(upStationId, lineId);
-        boolean hasDownStationInLine = hasStationInLine(downStationId, lineId);
+    private void updateSection(Long lineId, Set<Section> sectionsSnapshot, Sections sections) {
+        Set<Section> updateSections = Set.copyOf(sections.getSections());
 
-        if (hasUpStationInLine && hasDownStationInLine) {
-            throw new InvalidSectionException("이미 존재하는 구간입니다.");
-        }
+        Set<Section> deleteSections = getDifference(sectionsSnapshot, updateSections);
+        Set<Section> insertSections = getDifference(updateSections, sectionsSnapshot);
+
+        sectionDao.deleteAll(convertToSectionEntities(deleteSections, lineId));
+        sectionDao.insertAll(convertToSectionEntities(insertSections, lineId));
     }
 
-    private boolean hasStationInLine(Long stationId, Long lineId) {
-        return sectionDao.findByUpStationId(stationId, lineId).isPresent()
-                || sectionDao.findByDownStationId(stationId, lineId).isPresent();
+    private Station convertToStation(Long stationId) {
+        StationEntity stationEntity = stationDao.findById(stationId)
+                                                .orElseThrow(() -> new NotFoundException("해당 역을 찾을 수 없습니다."));
+        return Station.from(stationEntity);
     }
 
-    private void addStationBetweenStations(SectionEntity sectionEntity) {
-        if (hasStationInLine(sectionEntity.getUpStationId(), sectionEntity.getLineId())) {
-            addSectionBasedOnUpStation(sectionEntity.getUpStationId(), sectionEntity);
-            return;
-        }
-        if (hasStationInLine(sectionEntity.getDownStationId(), sectionEntity.getLineId())) {
-            addSectionBasedOnDownStation(sectionEntity.getDownStationId(), sectionEntity);
-            return;
-        }
-        throw new InvalidSectionException("한 역은 기존의 노선에 존재해야 합니다.");
+    private Set<Section> getDifference(Set<Section> sections, Set<Section> removeSections) {
+        Set<Section> original = new HashSet<>(sections);
+        Set<Section> remove = new HashSet<>(removeSections);
+        original.removeAll(remove);
+        return original;
     }
 
-    public void addSectionBasedOnUpStation(Long upStationId, SectionEntity sectionToAdd) {
-        Long lineId = sectionToAdd.getLineId();
-        Optional<SectionEntity> originalSectionEntity = sectionDao.findByUpStationId(upStationId, lineId);
-        if (originalSectionEntity.isPresent()) {
-            SectionEntity originalSection = originalSectionEntity.get();
-            Long downStationIdOfOrigin = originalSection.getDownStationId();
-            Long downStationIdOfToAdd = sectionToAdd.getDownStationId();
-            int revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-            SectionEntity revisedSection = new SectionEntity(lineId, downStationIdOfToAdd, downStationIdOfOrigin,
-                    revisedDistance);
-            sectionDao.updateByDownStationId(revisedSection);
-            sectionDao.insert(sectionToAdd);
-            return;
-        }
-
-        if (sectionDao.findByDownStationId(upStationId, lineId).isPresent()) {
-            sectionDao.insert(sectionToAdd);
-        }
-    }
-
-    public void addSectionBasedOnDownStation(Long downStationId, SectionEntity sectionToAdd) {
-        Long lineId = sectionToAdd.getLineId();
-        if (sectionDao.findByUpStationId(downStationId, lineId).isPresent()) {
-            sectionDao.insert(sectionToAdd);
-            return;
-        }
-        Optional<SectionEntity> originalSectionEntity = sectionDao.findByDownStationId(downStationId, lineId);
-        if (originalSectionEntity.isPresent()) {
-            SectionEntity originalSection = originalSectionEntity.get();
-            Long upStationIdOfOrigin = originalSection.getUpStationId();
-            Long upStationIdOfToAdd = sectionToAdd.getUpStationId();
-            int revisedDistance = findRevisedDistance(sectionToAdd, originalSection);
-
-            SectionEntity revisedSection = new SectionEntity(lineId, upStationIdOfOrigin, upStationIdOfToAdd,
-                    revisedDistance);
-            sectionDao.updateByUpStationId(revisedSection);
-            sectionDao.insert(sectionToAdd);
-        }
-    }
-
-    private static int findRevisedDistance(SectionEntity sectionToAdd, SectionEntity originalSection) {
-        int revisedDistance = originalSection.getDistance() - sectionToAdd.getDistance();
-        if (revisedDistance <= 0) {
-            throw new InvalidSectionException("현재 구간보다 큰 구간은 입력할 수 없습니다.");
-        }
-        return revisedDistance;
+    private List<SectionEntity> convertToSectionEntities(Set<Section> sections, Long lineId) {
+        return sections.stream()
+                       .map(section ->
+                               new SectionEntity(section.getId(),
+                                       lineId,
+                                       section.getUpStation().getId(),
+                                       section.getDownStation().getId(),
+                                       section.getDistance()))
+                       .collect(Collectors.toList());
     }
 
     public void removeStationFromLine(Long lineId, Long stationIdToRemove) {
         checkIfExistLine(lineId);
         checkIfExistStation(stationIdToRemove);
-        if (hasStationInLine(stationIdToRemove, lineId)) {
-            deleteStationBetweenStations(lineId, stationIdToRemove);
-            return;
-        }
-        Optional<SectionEntity> upStationEntity = sectionDao.findByUpStationId(stationIdToRemove, lineId);
-        if (upStationEntity.isPresent()) {
-            SectionEntity upSectionOfOrigin = upStationEntity.get();
-            sectionDao.delete(upSectionOfOrigin);
-            return;
-        }
-        Optional<SectionEntity> downStationEntity = sectionDao.findByDownStationId(stationIdToRemove, lineId);
-        if (downStationEntity.isPresent()) {
-            SectionEntity downSectionOfOrigin = downStationEntity.get();
-            sectionDao.delete(downSectionOfOrigin);
-            return;
-        }
-        throw new NotFoundException("노선에 역이 존재하지 않습니다.");
-    }
 
-    private void deleteStationBetweenStations(Long lineId, Long stationIdToRemove) {
-        SectionEntity upSectionOfOrigin = sectionDao.findByUpStationId(stationIdToRemove, lineId).get();
-        SectionEntity downSectionOfOrigin = sectionDao.findByDownStationId(stationIdToRemove, lineId).get();
-        int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
+        List<Section> findSections = getSectionsByLineId(lineId);
+        Set<Section> sectionsSnapshot = Set.copyOf(findSections);
+        Station removeStation = convertToStation(stationIdToRemove);
+        Sections sections = new Sections(findSections);
+        sections.removeStation(removeStation);
 
-        SectionEntity revisedSection = new SectionEntity(lineId, upSectionOfOrigin.getUpStationId(),
-                downSectionOfOrigin.getDownStationId(), revisedDistance);
-
-        sectionDao.updateByUpStationId(revisedSection);
-        sectionDao.delete(downSectionOfOrigin);
+        updateSection(lineId, sectionsSnapshot, sections);
     }
 
 
     private void checkIfExistLine(Long lineId) {
-        lineDao.findById(lineId).orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다."));
+        if (lineDao.isExistId(lineId)) {
+            return;
+        }
+        throw new NotFoundException("해당 노선이 존재하지 않습니다.");
     }
 
     private void checkIfExistStation(Long stationId) {
-        stationDao.findById(stationId).orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
+        if (stationDao.isExistId(stationId)) {
+            return;
+        }
+        throw new NotFoundException("해당 역이 존재하지 않습니다.");
     }
 
 }

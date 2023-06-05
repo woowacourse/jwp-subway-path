@@ -1,8 +1,9 @@
 package subway.domain;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import subway.exception.InvalidSectionException;
+import subway.exception.NotFoundException;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -12,34 +13,235 @@ public class Sections {
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public List<Station> findStations() {
+        List<Station> upStations = getUpStations();
+        List<Station> downStations = getDownStations();
+        Optional<Station> startStation = findStartStation(upStations, downStations);
 
-        List<Station> upStations = sections.stream()
-                .map(Section::getUpStation)
-                .collect(Collectors.toList());
+        if (startStation.isEmpty()) {
+            return null;
+        }
 
-        List<Station> downStations = sections.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList());
-
-        Station startStation = upStations.stream()
-                .filter(station -> !downStations.contains(station))
-                .findFirst().orElseThrow(()->new IllegalStateException("상행 종점을 찾을 수 없습니다"));
-
-        List<Station> stations = new LinkedList<>(List.of(startStation));
-
-        while (stations.size() <= sections.size()) {
-            for (Section section : sections) {
-                if (stations.get(stations.size()-1).equals(section.getUpStation())) {
-                    stations.add(section.getDownStation());
-                }
-            }
+        List<Station> stations = new LinkedList<>(List.of(startStation.get()));
+        while (stations.size() <= upStations.size()) {
+            stations.add(sort(stations));
         }
 
         return stations;
     }
 
+    private List<Station> getUpStations() {
+        return sections.stream()
+                       .map(Section::getUpStation)
+                       .collect(Collectors.toList());
+    }
+
+    private List<Station> getDownStations() {
+        return sections.stream()
+                       .map(Section::getDownStation)
+                       .collect(Collectors.toList());
+    }
+
+    private static Optional<Station> findStartStation(List<Station> upStations, List<Station> downStations) {
+        return upStations.stream()
+                         .filter(station -> !downStations.contains(station))
+                         .findFirst();
+    }
+
+    private Station sort(List<Station> stations) {
+        return sections.stream()
+                       .filter(section -> stations.get(stations.size() - 1)
+                                                  .equals(section.getUpStation()))
+                       .map(Section::getDownStation)
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("다음 역을 찾을 수 없습니다."));
+    }
+
+    public void addSection(Section sectionToAdd) {
+        Station upStation = sectionToAdd.getUpStation();
+        Station downStation = sectionToAdd.getDownStation();
+        checkIfImpossibleSection(sectionToAdd);
+        addStationBetweenStations(sectionToAdd, upStation, downStation);
+    }
+
+    private void checkIfImpossibleSection(Section sectionToAdd) {
+        boolean hasUpStationInLine = hasStationInLine(sectionToAdd.getUpStation());
+        boolean hasDownStationInLine = hasStationInLine(sectionToAdd.getDownStation());
+
+        if (hasUpStationInLine && hasDownStationInLine) {
+            throw new InvalidSectionException("이미 존재하는 구간입니다.");
+        }
+    }
+
+    private boolean hasStationInLine(Station newStation) {
+        boolean isInUpStation = sections.stream()
+                                        .anyMatch(section -> section.isUpStation(newStation));
+        boolean isInDownStation = sections.stream()
+                                          .anyMatch(section -> section.isDownStation(newStation));
+
+        return isInUpStation || isInDownStation;
+    }
+
+    private void addStationBetweenStations(Section sectionToAdd, Station upStation, Station downStation) {
+        if (hasStationInLine(upStation)) {
+            addSectionBasedOnUpStation(sectionToAdd, upStation);
+            return;
+        }
+        if (hasStationInLine(downStation)) {
+            addSectionBasedOnDownStation(sectionToAdd, downStation);
+            return;
+        }
+        throw new InvalidSectionException("한 역은 기존의 노선에 존재해야 합니다.");
+    }
+
+    private void addSectionBasedOnUpStation(Section sectionToAdd, Station upStation) {
+        Optional<Section> findSection = sections.stream()
+                .filter(section -> section.isUpStation(upStation))
+                .findFirst();
+        if (findSection.isPresent()) {
+            addSectionWhenUpStationIsExist(sectionToAdd, findSection.get());
+            return;
+        }
+
+        addSectionWhenUpStationIsNotExist(sectionToAdd, upStation);
+    }
+
+    private void addSectionWhenUpStationIsExist(Section sectionToAdd, Section findSection) {
+        Station downStationIdOfOrigin = findSection.getDownStation();
+        Station downStationIdOfToAdd = sectionToAdd.getDownStation();
+        Integer revisedDistance = findRevisedDistance(sectionToAdd, findSection);
+        Section revisedSection = Section.of(findSection.getId(), downStationIdOfToAdd, downStationIdOfOrigin, revisedDistance);
+        sections.remove(findSection);
+        sections.add(sectionToAdd);
+        sections.add(revisedSection);
+    }
+
+    private void addSectionWhenUpStationIsNotExist(Section sectionToAdd, Station upStation) {
+        sections.stream()
+                .filter(section -> section.isDownStation(upStation))
+                .findFirst()
+                .ifPresent(section -> sections.add(sectionToAdd));
+    }
+
+    private void addSectionBasedOnDownStation(Section sectionToAdd, Station downStation) {
+        Optional<Section> findSection = sections.stream()
+                                                .filter(section -> section.isDownStation(downStation))
+                                                .findFirst();
+        if (findSection.isPresent()) {
+            addSectionWhenDownStationIsExist(sectionToAdd, findSection.get());
+            return;
+        }
+
+        addSectionWhenDownStationIsNotExist(sectionToAdd, downStation);
+    }
+
+    private void addSectionWhenDownStationIsExist(Section sectionToAdd, Section findSection) {
+        Station upStationIdOfOrigin = findSection.getUpStation();
+        Station upStationIdOfToAdd = sectionToAdd.getUpStation();
+        Integer revisedDistance = findRevisedDistance(sectionToAdd, findSection);
+        Section revisedSection = Section.of(findSection.getId(), upStationIdOfOrigin, upStationIdOfToAdd, revisedDistance);
+        sections.remove(findSection);
+        sections.add(sectionToAdd);
+        sections.add(revisedSection);
+    }
+
+    private void addSectionWhenDownStationIsNotExist(Section sectionToAdd, Station downStation) {
+        sections.stream()
+                .filter(section -> section.isUpStation(downStation))
+                .findFirst()
+                .ifPresent(section -> sections.add(sectionToAdd));
+    }
+
+    private int findRevisedDistance(Section sectionToAdd, Section originalSection) {
+        int revisedDistance = originalSection.getDistance() - sectionToAdd.getDistance();
+        if (revisedDistance <= 0) {
+            throw new InvalidSectionException("현재 구간보다 큰 구간은 입력할 수 없습니다.");
+        }
+        return revisedDistance;
+    }
+
+    public void removeStation(Station removeStation) {
+        if (hasStationBothInLine(removeStation)) {
+            deleteStationBetweenStations(removeStation);
+            return;
+        }
+        removeAtUpStation(removeStation);
+        removeAtDownStation(removeStation);
+    }
+
+    private void removeAtDownStation(Station removeStation) {
+        sections.stream()
+                .filter(section -> section.isDownStation(removeStation))
+                .findFirst()
+                .ifPresent(sections::remove);
+    }
+
+    private void removeAtUpStation(Station removeStation) {
+        sections.stream()
+                .filter(section -> section.isUpStation(removeStation))
+                .findFirst()
+                .ifPresent(sections::remove);
+    }
+
+    private boolean hasStationBothInLine(Station newStation) {
+        boolean isInUpStation = sections.stream()
+                                        .anyMatch(section -> section.isUpStation(newStation));
+        boolean isInDownStation = sections.stream()
+                                          .anyMatch(section -> section.isDownStation(newStation));
+
+        return isInUpStation && isInDownStation;
+    }
+
+    private void deleteStationBetweenStations(Station removeStation) {
+        Section upSectionOfOrigin = getUpSectionOfOrigin(removeStation);
+        Section downSectionOfOrigin = getDownSectionOfOrigin(removeStation);
+
+        int revisedDistance = upSectionOfOrigin.getDistance() + downSectionOfOrigin.getDistance();
+        Section revisedSection = Section.of(upSectionOfOrigin.getId(), downSectionOfOrigin.getUpStation(), upSectionOfOrigin.getDownStation(), revisedDistance);
+
+        sections.remove(upSectionOfOrigin);
+        sections.remove(downSectionOfOrigin);
+        sections.add(revisedSection);
+    }
+
+    private Section getUpSectionOfOrigin(Station removeStation) {
+        return sections.stream()
+                       .filter(section -> section.isUpStation(removeStation))
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+    }
+
+    private Section getDownSectionOfOrigin(Station removeStation) {
+        return sections.stream()
+                       .filter(section -> section.isDownStation(removeStation))
+                       .findFirst()
+                       .orElseThrow(() -> new NotFoundException("해당 구간을 찾을 수 없습니다."));
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sections sections1 = (Sections) o;
+        return Objects.equals(sections, sections1.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
+    }
 }
