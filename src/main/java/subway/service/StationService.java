@@ -3,6 +3,7 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.*;
+import subway.dto.StationCreateReqeust;
 import subway.dto.StationDeleteRequest;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -12,6 +13,7 @@ import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationAlreadyExistException;
 import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
@@ -33,24 +35,22 @@ public class StationService {
     }
 
     @Transactional
-    public List<StationResponse> addStation(final StationAddRequest stationAddRequest) {
+    public void addStation(final StationAddRequest stationAddRequest) {
         final Line line = lineDao.findByName(stationAddRequest.getLineName())
                 .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
         Station upLineStation = stationDao.findByName(stationAddRequest.getUpLineStationName())
-                .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getUpLineStationName())))
+                .orElseThrow(() -> new StationNotFoundException())
                 .toDomain();
 
         Station downLineStation = stationDao.findByName(stationAddRequest.getDownLineStationName())
-                .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getDownLineStationName())))
+                .orElseThrow(() -> new StationNotFoundException())
                 .toDomain();
 
         final int distance = stationAddRequest.getDistance();
 
-        List<Station> addedStations = subwayGraphs.addStation(line, upLineStation, downLineStation, distance);
+        subwayGraphs.addStation(line, upLineStation, downLineStation, distance);
 
         final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
 
@@ -60,10 +60,6 @@ public class StationService {
             EdgeEntity edgeEntity = subwayGraphs.findEdge(line, station);
             edgeDao.save(edgeEntity);
         }
-
-        return addedStations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -117,5 +113,14 @@ public class StationService {
         }
 
         return List.of(StationResponse.of(station));
+    }
+
+    public StationResponse createStation(StationCreateReqeust stationCreateReqeust) {
+        if (stationDao.findByName(stationCreateReqeust.getName()).isPresent()) {
+            throw new StationAlreadyExistException();
+        }
+        Station station = new Station(stationCreateReqeust.getName());
+        StationEntity stationEntity = stationDao.saveStation(station.toEntity());
+        return new StationResponse(stationEntity.getId(), stationEntity.getName());
     }
 }

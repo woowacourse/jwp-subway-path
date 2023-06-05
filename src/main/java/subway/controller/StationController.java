@@ -3,6 +3,7 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.StationAddRequest;
+import subway.dto.StationCreateReqeust;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.service.StationService;
@@ -20,14 +21,22 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    // TODO: 2023/05/17 헤더값 문제??
     @PostMapping
-    public ResponseEntity<List<StationResponse>> addStation(@Valid @RequestBody StationAddRequest stationRequest) {
-        List<StationResponse> stationResponses = stationService.addStation(stationRequest);
+    public ResponseEntity<Void> addStation(@Valid @RequestBody StationAddRequest stationRequest) {
+        stationService.addStation(stationRequest);
         return ResponseEntity
-                .created(URI.create("/stations/" + stationResponses.get(0).getId()))
-                .body(stationResponses);
+                .ok()
+                .build();
     }
+
+    @PostMapping("/station")
+    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationCreateReqeust stationCreateReqeust) {
+        StationResponse station = stationService.createStation(stationCreateReqeust);
+        return ResponseEntity
+                .created(URI.create("/stations/station" + station.getId()))
+                .body(station);
+    }
+
 
     @DeleteMapping("/station")
     public ResponseEntity<List<StationResponse>> deleteStation(@Valid @RequestBody StationDeleteRequest stationDeleteRequest) {

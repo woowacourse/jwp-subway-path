@@ -14,19 +14,31 @@ import static subway.integration.Utils.*;
 import static subway.integration.Utils.addStation;
 
 public class StationIntegrationTest extends IntegrationTest {
+
+    @Test
+    @DisplayName("")
+    void createStationTest() {
+        ExtractableResponse<Response> response = createStation("a역");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+
     @DisplayName("노선에 초기 지하철역을 추가한다.")
     @Test
     void addStationTest() {
+
         createLine("2호선");
 
+        createStation("잠실역");
+        createStation("잠실새내역");
         ExtractableResponse<Response> response = addStation(
                 "2호선",
                 "잠실역",
                 "잠실새내역",
                 5);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -36,6 +48,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 "잠실역",
                 "잠실새내역",
                 5);
+        createStation("강변역");
         addStation("2호선",
                 "잠실역",
                 "강변역",
@@ -57,6 +70,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 "잠실역",
                 "잠실새내역",
                 5);
+        createStation("강변역");
         addStation("2호선",
                 "잠실역",
                 "강변역",

@@ -20,6 +20,7 @@ public class PathIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("최단 경로를 구할 수 있다.")
     void findShortestPath() {
+        initStations();
         initLine("2호선", "a역", "c역", 1);
         addStation("2호선", "c역", "b역", 2);
         addStation("2호선", "b역", "d역", 3);
@@ -49,5 +50,13 @@ public class PathIntegrationTest extends IntegrationTest {
                                 new Station("e역"),
                                 new Station("d역")
                         ));
+    }
+
+    void initStations() {
+        createStation("a역");
+        createStation("b역");
+        createStation("c역");
+        createStation("d역");
+        createStation("e역");
     }
 }
