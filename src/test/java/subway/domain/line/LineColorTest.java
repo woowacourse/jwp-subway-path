@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.line.exception.LineColorException;
+import subway.line.domain.LineColor;
+import subway.line.domain.exception.LineColorException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("노선 색상은")
@@ -18,23 +19,23 @@ class LineColorTest {
     @Test
     void 정상적으로_생성된다() {
         assertThatCode(() -> new LineColor("red"))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "  "})
-    void 공백이면_예외가_발생한다(final String input) {
+    void 공백이면_예외가_발생한다(String input) {
         assertThatCode(() -> new LineColor(input)).isInstanceOf(LineColorException.class)
-            .hasMessage("노선 색상이 공백입니다. 글자를 입력해주세요");
+                .hasMessage("노선 색상이 공백입니다. 글자를 입력해주세요");
     }
 
     @Test
     void 글자수가_20글자를_초과하면_예외가_발생한다() {
-        final String input = "1".repeat(21);
+        String input = "1".repeat(21);
 
         assertThatCode(() -> new LineColor(input))
-            .isInstanceOf(LineColorException.class)
-            .hasMessage("노선 색상이 20글자를 초과했습니다");
+                .isInstanceOf(LineColorException.class)
+                .hasMessage("노선 색상이 20글자를 초과했습니다");
     }
 }

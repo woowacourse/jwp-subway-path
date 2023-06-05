@@ -8,10 +8,10 @@ import static subway.acceptance.CommonSteps.doPut;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.ui.station.dto.in.StationCreateRequest;
-import subway.ui.station.dto.in.StationInfoResponse;
-import subway.ui.station.dto.in.StationInfosResponse;
-import subway.ui.station.dto.in.StationUpdateInfoRequest;
+import subway.station.ui.dto.in.StationCreateRequest;
+import subway.station.ui.dto.in.StationInfoResponse;
+import subway.station.ui.dto.in.StationInfosResponse;
+import subway.station.ui.dto.in.StationUpdateInfoRequest;
 
 public class StationSteps {
 

@@ -16,7 +16,9 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.interstation.exception.InterStationsException;
+import subway.interstation.domain.InterStation;
+import subway.interstation.domain.InterStations;
+import subway.interstation.domain.exception.InterStationsException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("구간들은")
@@ -24,7 +26,7 @@ class InterStationsTest {
 
     @Test
     void 정상적으로_생성된다() {
-        final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+        List<InterStation> given = List.of(코다에서_누누_구간_id_1);
 
         assertThatCode(() -> new InterStations(given))
                 .doesNotThrowAnyException();
@@ -39,7 +41,7 @@ class InterStationsTest {
 
     @Test
     void 비어있으면_예외가_발생한다() {
-        final List<InterStation> given = List.of();
+        List<InterStation> given = List.of();
 
         assertThatCode(() -> new InterStations(given))
                 .isInstanceOf(InterStationsException.class)
@@ -54,13 +56,13 @@ class InterStationsTest {
 
     @Test
     void 구간은_항상_정렬된_상태로_유지된다() {
-        final List<InterStation> given = List.of(
+        List<InterStation> given = List.of(
                 누누에서_두둠_구간_id_2,
                 코다에서_누누_구간_id_1,
                 두둠에서_처음보는_역_id_3
         );
 
-        final List<InterStation> result = new InterStations(given).getInterStations();
+        List<InterStation> result = new InterStations(given).getInterStations();
 
         assertThat(result).containsExactly(
                 코다에서_누누_구간_id_1,
@@ -71,7 +73,7 @@ class InterStationsTest {
 
     @Test
     void 구간은_중복되지_않는다() {
-        final List<InterStation> given = List.of(
+        List<InterStation> given = List.of(
                 코다에서_누누_구간_id_1,
                 코다에서_누누_구간_id_1
         );
@@ -83,7 +85,7 @@ class InterStationsTest {
 
     @Test
     void 구간은_연결되어_있어야_한다() {
-        final List<InterStation> given = List.of(
+        List<InterStation> given = List.of(
                 코다에서_누누_구간_id_1,
                 두둠에서_처음보는_역_id_3
         );
@@ -99,8 +101,8 @@ class InterStationsTest {
 
         @Test
         void 상행선부터_하행선까지_순서대로_가져올_수_있다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1, 누누에서_두둠_구간_id_2);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1, 누누에서_두둠_구간_id_2);
+            InterStations interStations = new InterStations(given);
 
             assertThat(interStations.getAllStations()).containsExactly(
                     코다_역_id_1.getId(),
@@ -115,8 +117,8 @@ class InterStationsTest {
 
         @Test
         void 정상적으로_추가된다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            InterStations interStations = new InterStations(given);
 
             assertThatCode(() -> interStations.add(2L, null, 3L, 10))
                     .doesNotThrowAnyException();
@@ -124,8 +126,8 @@ class InterStationsTest {
 
         @Test
         void 구간이_중복되면_예외가_발생한다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            InterStations interStations = new InterStations(given);
 
             assertThatCode(() -> interStations.add(1L, 2L, 2L, 10L))
                     .isInstanceOf(InterStationsException.class)
@@ -134,8 +136,8 @@ class InterStationsTest {
 
         @Test
         void 구간이_연결되어있지_않으면_예외가_발생한다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            InterStations interStations = new InterStations(given);
 
             assertThatCode(() -> interStations.add(3L, null, 4L, 10L))
                     .isInstanceOf(InterStationsException.class)
@@ -144,8 +146,8 @@ class InterStationsTest {
 
         @Test
         void 구간은_정렬된_상태가_유지된다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            InterStations interStations = new InterStations(given);
 
             interStations.add(2L, null, 3L, 10L);
 
@@ -157,12 +159,12 @@ class InterStationsTest {
 
         @Test
         void 중간에_추가되어도_정렬된_상태가_유지된다() {
-            final List<InterStation> given = List.of(
+            List<InterStation> given = List.of(
                     코다에서_누누_구간_id_1,
                     누누에서_두둠_구간_id_2
             );
-            final InterStations interStations = new InterStations(given);
-            final List<InterStation> expected = List.of(
+            InterStations interStations = new InterStations(given);
+            List<InterStation> expected = List.of(
                     코다에서_누누_구간_id_1,
                     new InterStation(누누_역_id_2.getId(), 처음보는_역_id_4.getId(), 1L),
                     new InterStation(처음보는_역_id_4.getId(), 두둠_역_id_3.getId(), 9L)
@@ -181,11 +183,11 @@ class InterStationsTest {
 
         @Test
         void 처음을_제거해도_정상적으로_제거된다() {
-            final List<InterStation> given = List.of(
+            List<InterStation> given = List.of(
                     코다에서_누누_구간_id_1,
                     누누에서_두둠_구간_id_2
             );
-            final InterStations interStations = new InterStations(given);
+            InterStations interStations = new InterStations(given);
 
             interStations.remove(코다_역_id_1.getId());
 
@@ -194,11 +196,11 @@ class InterStationsTest {
 
         @Test
         void 마지막을_제거해도_정상적으로_제거된다() {
-            final List<InterStation> given = List.of(
+            List<InterStation> given = List.of(
                     코다에서_누누_구간_id_1,
                     누누에서_두둠_구간_id_2
             );
-            final InterStations interStations = new InterStations(given);
+            InterStations interStations = new InterStations(given);
 
             interStations.remove(두둠_역_id_3.getId());
 
@@ -207,11 +209,11 @@ class InterStationsTest {
 
         @Test
         void 중간을_제거해도_정상적으로_제거된다() {
-            final List<InterStation> given = List.of(
+            List<InterStation> given = List.of(
                     코다에서_누누_구간_id_1,
                     누누에서_두둠_구간_id_2
             );
-            final InterStations interStations = new InterStations(given);
+            InterStations interStations = new InterStations(given);
 
             interStations.remove(누누_역_id_2.getId());
 
@@ -221,11 +223,11 @@ class InterStationsTest {
 
         @Test
         void 역이_없으면_예외가_발생한다() {
-            final List<InterStation> given = List.of(
+            List<InterStation> given = List.of(
                     코다에서_누누_구간_id_1,
                     누누에서_두둠_구간_id_2
             );
-            final InterStations interStations = new InterStations(given);
+            InterStations interStations = new InterStations(given);
 
             assertThatCode(() -> interStations.remove(처음보는_역_id_4.getId()))
                     .isInstanceOf(InterStationsException.class)
@@ -239,8 +241,8 @@ class InterStationsTest {
 
         @Test
         void 확인할_수_있다() {
-            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
-            final InterStations interStations = new InterStations(given);
+            List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            InterStations interStations = new InterStations(given);
 
             assertThat(interStations.isEmpty()).isFalse();
         }

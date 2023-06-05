@@ -9,7 +9,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.station.port.in.MockStationDeleteUseCase;
+import subway.station.application.port.in.MockStationDeleteUseCase;
+import subway.station.ui.StationDeleteController;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 id 통해 삭제하는 기능")

@@ -11,12 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.adapter.line.out.LineRepositoryImpl;
-import subway.application.line.port.out.LineRepository;
-import subway.application.line.service.LineFindAllService;
-import subway.domain.line.Line;
-import subway.domain.route.Edges;
-import subway.domain.route.InterStationEdge;
+import subway.line.LineRepositoryImpl;
+import subway.line.application.port.out.LineRepository;
+import subway.line.application.service.LineFindAllService;
+import subway.line.domain.Line;
+import subway.route.domain.Edges;
+import subway.route.domain.InterStationEdge;
+import subway.route.in.find.LineEdgesAdapter;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("경로 조회용 역할 어댑터 테스트")
@@ -29,9 +30,9 @@ class LineEdgesAdapterTest {
     private long line3호선_id;
 
     @Autowired
-    private void setUp(final JdbcTemplate jdbcTemplate) {
+    private void setUp(JdbcTemplate jdbcTemplate) {
         lineRepository = new LineRepositoryImpl(jdbcTemplate);
-        final LineFindAllService lineFindAllService = new LineFindAllService(lineRepository);
+        LineFindAllService lineFindAllService = new LineFindAllService(lineRepository);
         lineEdgesAdapter = new LineEdgesAdapter(lineFindAllService);
     }
 
@@ -44,7 +45,7 @@ class LineEdgesAdapterTest {
     @Test
     void 정상적으로_모든_역을_그래프_형태로_반환한다() {
         // when
-        final Edges allEdges = lineEdgesAdapter.findAllEdges();
+        Edges allEdges = lineEdgesAdapter.findAllEdges();
         // then
 
         assertThat(allEdges.getEdges()).usingRecursiveComparison()

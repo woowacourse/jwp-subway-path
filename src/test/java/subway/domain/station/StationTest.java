@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.station.domain.Station;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("역은")
@@ -19,12 +20,12 @@ class StationTest {
         final String input = "강남역";
 
         assertThatCode(() -> new Station(input))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @Test
     void id가_같으면_같은_객체이다() {
-        final Station station2 = new Station(1L, "누누");
+        Station station2 = new Station(1L, "누누");
 
         assertThat(station2).isEqualTo(코다_역_id_1);
     }
@@ -37,7 +38,7 @@ class StationTest {
     @Test
     void 이름을_변경할_수_있다() {
         final String input = "강남역";
-        final Station station = new Station(input);
+        Station station = new Station(input);
         final String updatedName = "역삼역";
 
         station.updateName(updatedName);

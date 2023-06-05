@@ -5,18 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.line.port.in.addinterstation.LineAddInterStationUseCase;
-import subway.application.line.port.in.create.LineCreateUseCase;
-import subway.application.line.port.in.delete.LineDeleteUseCase;
-import subway.application.line.port.in.findById.LineFindByIdUseCase;
-import subway.application.line.port.in.findall.LineFindAllUseCase;
-import subway.application.line.port.in.update.LineUpdateInfoUseCase;
-import subway.application.route.port.in.find.RouteFindUseCase;
-import subway.application.station.port.in.StationCreateUseCase;
-import subway.application.station.port.in.StationDeleteUseCase;
-import subway.application.station.port.in.StationFindAllUseCase;
-import subway.application.station.port.in.StationFindByIdUseCase;
-import subway.application.station.port.in.StationUpdateInfoUseCase;
+import subway.line.application.port.in.addinterstation.LineAddInterStationUseCase;
+import subway.line.application.port.in.create.LineCreateUseCase;
+import subway.line.application.port.in.delete.LineDeleteUseCase;
+import subway.line.application.port.in.findById.LineFindByIdUseCase;
+import subway.line.application.port.in.findall.LineFindAllUseCase;
+import subway.line.application.port.in.update.LineUpdateInfoUseCase;
+import subway.route.application.port.in.find.RouteFindUseCase;
+import subway.station.application.port.in.StationCreateUseCase;
+import subway.station.application.port.in.StationDeleteUseCase;
+import subway.station.application.port.in.StationFindAllUseCase;
+import subway.station.application.port.in.StationFindByIdUseCase;
+import subway.station.application.port.in.StationUpdateInfoUseCase;
 
 @WebMvcTest
 public abstract class AbstractControllerTest {

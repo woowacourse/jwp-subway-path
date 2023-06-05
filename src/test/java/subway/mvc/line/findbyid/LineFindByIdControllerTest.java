@@ -11,11 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.application.line.port.in.InterStationResponseDto;
-import subway.application.line.port.in.LineResponseDto;
+import subway.line.application.port.in.InterStationResponseDto;
+import subway.line.application.port.in.LineResponseDto;
+import subway.line.ui.dto.in.InterStationResponse;
+import subway.line.ui.dto.in.LineResponse;
 import subway.mvc.AbstractControllerTest;
-import subway.ui.line.dto.in.InterStationResponse;
-import subway.ui.line.dto.in.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 조회하는 기능 mvc 테스트")
@@ -27,10 +27,10 @@ class LineFindByIdControllerTest extends AbstractControllerTest {
                 .willReturn(new LineResponseDto(1L, "2호선", "green", List.of(
                         new InterStationResponseDto(1L, 2L, 3L, 4L)
                 )));
-        final LineResponse resultBody = new LineResponse(1L, "2호선", "green", List.of(
+        LineResponse resultBody = new LineResponse(1L, "2호선", "green", List.of(
                 new InterStationResponse(1L, 2L, 3L, 4L)
         ));
-        final String expect = objectMapper.writeValueAsString(resultBody);
+        String expect = objectMapper.writeValueAsString(resultBody);
 
         mockMvc.perform(get("/lines/1"))
 

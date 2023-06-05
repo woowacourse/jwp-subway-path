@@ -9,9 +9,10 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.station.port.in.MockStationCreateUseCase;
-import subway.ui.station.dto.in.StationCreateRequest;
-import subway.ui.station.dto.in.StationInfoResponse;
+import subway.station.application.port.in.MockStationCreateUseCase;
+import subway.station.ui.StationCreateController;
+import subway.station.ui.dto.in.StationCreateRequest;
+import subway.station.ui.dto.in.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 생성하는 기능")

@@ -9,8 +9,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.station.port.in.MockStationUpdateInfoUseCase;
-import subway.ui.station.dto.in.StationUpdateInfoRequest;
+import subway.station.application.port.in.MockStationUpdateInfoUseCase;
+import subway.station.ui.StationUpdateInfoController;
+import subway.station.ui.dto.in.StationUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역 정보 수정")

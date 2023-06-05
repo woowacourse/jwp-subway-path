@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.interstation.exception.DistanceException;
+import subway.interstation.domain.Distance;
+import subway.interstation.domain.exception.DistanceException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("거리는")
@@ -21,22 +22,22 @@ class DistanceTest {
         final long input = 1L;
 
         assertThatCode(() -> new Distance(input))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @ParameterizedTest(name = "입력값: {0}")
     @ValueSource(longs = {0L, -1L})
-    void 음수이면_예외가_발생한다(final long input) {
+    void 음수이면_예외가_발생한다(long input) {
 
         assertThatCode(() -> new Distance(input))
-            .isInstanceOf(DistanceException.class)
-            .hasMessage("거리는 양수이어야 합니다.");
+                .isInstanceOf(DistanceException.class)
+                .hasMessage("거리는 양수이어야 합니다.");
     }
 
     @Test
     void 크기가_같으면_같은_객체이다() {
-        final Distance distance1 = new Distance(1L);
-        final Distance distance2 = new Distance(1L);
+        Distance distance1 = new Distance(1L);
+        Distance distance2 = new Distance(1L);
 
         assertThat(distance1).isEqualTo(distance2);
     }
@@ -47,10 +48,10 @@ class DistanceTest {
 
         @Test
         void 두_거리를_더한_값을_반환한다() {
-            final Distance distance1 = new Distance(1L);
-            final Distance distance2 = new Distance(2L);
+            Distance distance1 = new Distance(1L);
+            Distance distance2 = new Distance(2L);
 
-            final Distance actual = distance1.add(distance2);
+            Distance actual = distance1.add(distance2);
 
             assertThat(actual).isEqualTo(new Distance(3L));
         }

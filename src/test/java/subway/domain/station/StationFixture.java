@@ -1,5 +1,7 @@
 package subway.domain.station;
 
+import subway.station.domain.Station;
+
 public class StationFixture {
 
     public static final Station 코다_역_id_1 = new Station(1L, "코다");

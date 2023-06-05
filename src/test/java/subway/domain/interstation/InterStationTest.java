@@ -13,7 +13,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.interstation.exception.InterStationException;
+import subway.interstation.domain.InterStation;
+import subway.interstation.domain.exception.InterStationException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("구간은")
@@ -40,7 +41,7 @@ class InterStationTest {
 
     @Test
     void id가_같으면_같은_객체이다() {
-        final InterStation interStation1 = new InterStation(1L, 코다_역_id_1.getId(), 누누_역_id_2.getId(), 1L);
+        InterStation interStation1 = new InterStation(1L, 코다_역_id_1.getId(), 누누_역_id_2.getId(), 1L);
 
         assertThat(interStation1).isEqualTo(코다에서_누누_구간_id_1);
     }

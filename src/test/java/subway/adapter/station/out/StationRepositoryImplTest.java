@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.station.Station;
+import subway.station.domain.Station;
+import subway.station.out.StationRepositoryImpl;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("StationRepository 는")
@@ -23,7 +24,7 @@ class StationRepositoryImplTest {
     private final StationRepositoryImpl stationRepository;
 
     @Autowired
-    private StationRepositoryImplTest(final JdbcTemplate jdbcTemplate) {
+    private StationRepositoryImplTest(JdbcTemplate jdbcTemplate) {
         stationRepository = new StationRepositoryImpl(jdbcTemplate);
     }
 
@@ -33,7 +34,7 @@ class StationRepositoryImplTest {
         final String name = "강남역";
 
         // when
-        final Station result = stationRepository.save(new Station(name));
+        Station result = stationRepository.save(new Station(name));
 
         // then
         assertSoftly(softly -> {
@@ -58,7 +59,7 @@ class StationRepositoryImplTest {
             // given
             // when
             stationRepository.deleteById(station.getId());
-            final Optional<Station> result = stationRepository.findById(station.getId());
+            Optional<Station> result = stationRepository.findById(station.getId());
 
             // then
             assertSoftly(softly -> softly.assertThat(result).isEmpty());
@@ -72,7 +73,7 @@ class StationRepositoryImplTest {
 
             // when
             stationRepository.update(station);
-            final Optional<Station> result = stationRepository.findById(station.getId());
+            Optional<Station> result = stationRepository.findById(station.getId());
 
             // then
             assertSoftly(softly -> {
@@ -85,7 +86,7 @@ class StationRepositoryImplTest {
         void 조회할_수_있다() {
             // given
             // when
-            final Optional<Station> result = stationRepository.findById(station.getId());
+            Optional<Station> result = stationRepository.findById(station.getId());
 
             // then
             assertSoftly(softly -> {
@@ -98,7 +99,7 @@ class StationRepositoryImplTest {
         void 이름으로_조회할_수_있다() {
             // given
             // when
-            final Optional<Station> result = stationRepository.findByName(station.getName().getValue());
+            Optional<Station> result = stationRepository.findByName(station.getName().getValue());
 
             // then
             assertSoftly(softly -> {
@@ -111,7 +112,7 @@ class StationRepositoryImplTest {
         void 전체_조회할_수_있다() {
             // given
             // when
-            final Iterable<Station> result = stationRepository.findAll();
+            Iterable<Station> result = stationRepository.findAll();
 
             // then
             assertSoftly(softly -> {

@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.mvc.AbstractControllerTest;
-import subway.ui.station.dto.in.StationUpdateInfoRequest;
+import subway.station.ui.dto.in.StationUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역 정보 수정 mvc 테스트")

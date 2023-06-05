@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.application.line.port.MockLIneUpdateInfoUseCase;
-import subway.ui.line.LineUpdateInfoController;
-import subway.ui.line.dto.in.LineUpdateInfoRequest;
+import subway.line.application.port.MockLIneUpdateInfoUseCase;
+import subway.line.ui.LineUpdateInfoController;
+import subway.line.ui.dto.in.LineUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 수정하는 기능")

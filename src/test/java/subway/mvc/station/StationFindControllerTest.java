@@ -11,11 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.application.station.port.in.StationInfoResponseDto;
+import subway.station.application.port.in.StationInfoResponseDto;
 import subway.mvc.AbstractControllerTest;
-import subway.ui.station.StationAssembler;
-import subway.ui.station.dto.in.StationInfoResponse;
-import subway.ui.station.dto.in.StationInfosResponse;
+import subway.station.ui.StationAssembler;
+import subway.station.ui.dto.in.StationInfoResponse;
+import subway.station.ui.dto.in.StationInfosResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 전체 조회 mvc 테스트")

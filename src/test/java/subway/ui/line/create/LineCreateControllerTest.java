@@ -10,10 +10,10 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.line.port.MockLineCreateUseCase;
-import subway.ui.line.LineCreateController;
-import subway.ui.line.dto.in.LineCreateRequest;
-import subway.ui.line.dto.in.LineResponse;
+import subway.line.application.port.MockLineCreateUseCase;
+import subway.line.ui.LineCreateController;
+import subway.line.ui.dto.in.LineCreateRequest;
+import subway.line.ui.dto.in.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 생성하는 기능")
@@ -31,7 +31,7 @@ class LineCreateControllerTest {
     @Test
     void 정상적으로_생성된다() {
         // when
-        final ResponseEntity<LineResponse> result = lineCreateController.createLine(
+        ResponseEntity<LineResponse> result = lineCreateController.createLine(
                 new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
 
         // then

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import subway.application.line.port.MockLineDeleteUseCase;
-import subway.ui.line.LineDeleteController;
+import subway.line.application.port.MockLineDeleteUseCase;
+import subway.line.ui.LineDeleteController;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 삭제하는 기능")
@@ -27,7 +27,7 @@ class LineDeleteControllerTest {
 
     @Test
     void 정상적으로_삭제된다() {
-        final ResponseEntity<Void> result = lineDeleteController.deleteLineById(1L);
+        ResponseEntity<Void> result = lineDeleteController.deleteLineById(1L);
 
         assertSoftly(softly -> {
             softly.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

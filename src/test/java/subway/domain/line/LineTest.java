@@ -11,7 +11,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.interstation.InterStations;
+import subway.interstation.domain.InterStations;
+import subway.line.domain.Line;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("노선은")
@@ -19,16 +20,16 @@ class LineTest {
 
     @Test
     void 정상적으로_생성된다() {
-        final InterStations input = new InterStations(List.of(코다에서_누누_구간_id_1));
+        InterStations input = new InterStations(List.of(코다에서_누누_구간_id_1));
 
         assertThatCode(() -> new Line(1L, "코다선", "bg-blud-600", input))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @Test
     void 색을_변경할_수_있다() {
-        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
-        final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+        InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
         final String updatedColor = "bg-green-600";
 
         line.updateColor(updatedColor);
@@ -38,8 +39,8 @@ class LineTest {
 
     @Test
     void 이름을_변경할_수_있다() {
-        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
-        final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+        InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
         final String updatedName = "누누선";
 
         line.updateName(updatedName);
@@ -49,8 +50,8 @@ class LineTest {
 
     @Test
     void id가_같으면_같은_객체이다() {
-        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
-        final Line line2 = new Line(1L, "코다선", "bg-blue-600", interStations);
+        InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        Line line2 = new Line(1L, "코다선", "bg-blue-600", interStations);
 
         assertThat(line2).isEqualTo(new Line(1L, "코다선", "bg-blue-600", interStations));
     }
@@ -61,8 +62,8 @@ class LineTest {
 
         @Test
         void 정상적으로_추가된다() {
-            final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
-            final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+            InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+            Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
 
             line.addInterStation(누누_역_id_2.getId(), null, 4L, 1L);
 
@@ -76,8 +77,8 @@ class LineTest {
 
         @Test
         void 정상적으로_삭제된다() {
-            final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
-            final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+            InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+            Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
 
             line.deleteStation(누누_역_id_2.getId());
 

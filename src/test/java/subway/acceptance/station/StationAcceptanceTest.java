@@ -19,7 +19,7 @@ import static subway.acceptance.station.StationSteps.역_제거_요청;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.acceptance.IntegrationTest;
-import subway.ui.station.dto.in.StationInfoResponse;
+import subway.station.ui.dto.in.StationInfoResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 class StationAcceptanceTest extends IntegrationTest {
