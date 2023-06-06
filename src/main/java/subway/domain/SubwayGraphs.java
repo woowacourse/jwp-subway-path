@@ -18,9 +18,12 @@ import java.util.Optional;
 @Component
 public class SubwayGraphs {
     private final List<SubwayGraph> subwayGraphs;
+    private final WeightedMultigraph subwayMap;
+
 
     public SubwayGraphs(List<SubwayGraph> subwayGraphs) {
         this.subwayGraphs = new ArrayList<>(subwayGraphs);
+        this.subwayMap = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
     public SubwayGraphs() {
@@ -73,7 +76,7 @@ public class SubwayGraphs {
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> getSubwayMap() {
-        WeightedMultigraph subwayMap = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        Graphs.removeVertexAndPreserveConnectivity(subwayMap, subwayMap.vertexSet().iterator());
         for (SubwayGraph subwayGraph : this.subwayGraphs) {
             Graphs.addGraph(subwayMap, subwayGraph.getMultiGraph());
         }
