@@ -15,12 +15,12 @@ class DistancePolicyTest {
 
     @ParameterizedTest
     @CsvSource(value = {"9,1250", "12,1350", "16,1450", "58,2150"})
-    void 거리에_따른_요금을_계산한다(final int input, final long expected) {
+    void 거리에_따른_요금을_계산한다(int input, long expected) {
         // given
-        final DistanceFareStrategy distancePolicy = DistancePolicy.from(input);
+        DistancePolicy distancePolicy = DistancePolicy.from(input);
 
         // when
-        final long result = distancePolicy.calculateFare(input);
+        long result = distancePolicy.calculateFare(input);
 
         // then
         assertThat(result).isEqualTo(expected);

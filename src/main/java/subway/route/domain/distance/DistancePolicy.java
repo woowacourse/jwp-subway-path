@@ -16,11 +16,14 @@ public enum DistancePolicy {
         this.distanceFareStrategy = distanceFareStrategy;
     }
 
-    public static DistanceFareStrategy from(long distance) {
+    public static DistancePolicy from(long distance) {
         return Arrays.stream(values())
                 .filter(distancePolicy -> distancePolicy.distancePredicate.test(distance))
                 .findFirst()
-                .orElseThrow(InvalidDistanceException::new)
-                .distanceFareStrategy;
+                .orElseThrow(InvalidDistanceException::new);
+    }
+
+    public long calculateFare(long distance) {
+        return distanceFareStrategy.calculateFare(distance);
     }
 }
