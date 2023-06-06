@@ -23,10 +23,6 @@ public class Distance {
         return new Distance(value + distance.value);
     }
 
-    public Distance minus(long distance) {
-        return new Distance(value - distance);
-    }
-
     public long getValue() {
         return value;
     }

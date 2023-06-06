@@ -25,10 +25,6 @@ public class InterStation {
         this(id, other.upStationId, other.downStationId, other.distance);
     }
 
-    public InterStation(Long upStationId, Long downStationId, Distance distance) {
-        this(null, upStationId, downStationId, distance);
-    }
-
     public InterStation(Long id, Long upStationId, Long downStationId, long distance) {
         this(id, upStationId, downStationId, new Distance(distance));
     }
