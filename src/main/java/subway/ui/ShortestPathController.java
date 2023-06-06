@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("/shortestPath")
+@RequestMapping("/shortest-path")
 public class ShortestPathController {
 
     private final PathService pathService;
