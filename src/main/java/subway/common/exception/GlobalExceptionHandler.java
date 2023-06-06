@@ -1,6 +1,5 @@
 package subway.common.exception;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +23,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleException(Exception exception) {
+    private ResponseEntity<ErrorResponse> handleException(Exception exception) {
         log.error("예상치 못한 예외가 발생했습니다.", exception);
-        return ResponseEntity.internalServerError().body(new ErrorResponse<>("예상치 못한 예외가 발생했습니다."));
+        return ResponseEntity.internalServerError().body(new ErrorResponse("예상치 못한 예외가 발생했습니다."));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleIllegalArgumentException(
+    private ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException exception) {
         log.warn("잘못된 인자가 들어왔습니다", exception);
-        return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @Override
@@ -42,43 +41,44 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus status,
             WebRequest request) {
         log.warn("유효성 검사에 실패했습니다.", ex);
-        Map<String, String> body = ex.getFieldErrors()
+        String message = ex.getFieldErrors()
                 .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-        return ResponseEntity.badRequest().body(new ErrorResponse<>(body));
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleMethodArgumentTypeMismatch(
+    private ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException exception) {
         log.warn("잘못된 인자가 들어왔습니다.", exception);
-        return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleBusinessException(BusinessException exception) {
+    private ResponseEntity<ErrorResponse> handleBusinessException(BusinessException exception) {
         log.warn("비즈니스 예외가 발생했습니다.", exception);
-        return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleLineNotFound(LineNotFoundException exception) {
+    private ResponseEntity<ErrorResponse> handleLineNotFound(LineNotFoundException exception) {
         log.warn("노선을 찾을 수 없습니다.", exception);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse<>(exception.getMessage()));
+                .body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handleStationNotFound(StationNotFoundException exception) {
+    private ResponseEntity<ErrorResponse> handleStationNotFound(StationNotFoundException exception) {
         log.warn("역을 찾을 수 없습니다.", exception);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse<>(exception.getMessage()));
+                .body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse<String>> handlePathNotFound(PathNotFoundException exception) {
+    private ResponseEntity<ErrorResponse> handlePathNotFound(PathNotFoundException exception) {
         log.warn("경로를 찾을 수 없습니다.", exception);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse<>(exception.getMessage()));
+                .body(new ErrorResponse(exception.getMessage()));
     }
 }

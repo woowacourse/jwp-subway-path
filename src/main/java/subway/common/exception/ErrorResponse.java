@@ -1,14 +1,14 @@
 package subway.common.exception;
 
-public class ErrorResponse<T> {
+public class ErrorResponse {
 
-    private final T data;
+    private final String data;
 
-    public ErrorResponse(T data) {
+    public ErrorResponse(String data) {
         this.data = data;
     }
 
-    public T getData() {
+    public String getData() {
         return data;
     }
 }
