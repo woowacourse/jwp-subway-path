@@ -62,20 +62,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-    private ResponseEntity<Void> handleLineNotFound(LineNotFoundException exception) {
+    private ResponseEntity<ErrorResponse<String>> handleLineNotFound(LineNotFoundException exception) {
         log.warn("노선을 찾을 수 없습니다.", exception);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse<>(exception.getMessage()));
     }
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handleStationNotFound(StationNotFoundException exception) {
         log.warn("역을 찾을 수 없습니다.", exception);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse<>(exception.getMessage()));
     }
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handlePathNotFound(PathNotFoundException exception) {
         log.warn("경로를 찾을 수 없습니다.", exception);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse<>(exception.getMessage()));
     }
 }
