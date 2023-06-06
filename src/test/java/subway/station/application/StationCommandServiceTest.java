@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import subway.station.db.FakeStationRepository;
 import subway.station.domain.Station;
 import subway.station.domain.StationDeletedEvent;
-import subway.station.ui.dto.reqest.StationCreateRequest;
-import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
+import subway.station.dto.request.StationCreateRequest;
+import subway.station.dto.request.StationUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 삭제하는 서비스 테스트")

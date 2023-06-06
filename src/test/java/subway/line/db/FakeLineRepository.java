@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import subway.interstation.domain.InterStation;
-import subway.interstation.domain.InterStations;
-import subway.line.domain.Line;
-import subway.line.domain.LineRepository;
+import subway.line.domain.interstation.InterStation;
+import subway.line.domain.interstation.InterStations;
+import subway.line.domain.line.Line;
+import subway.line.domain.line.LineRepository;
 
 public class FakeLineRepository implements LineRepository {
 

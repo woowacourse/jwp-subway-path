@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.StationCommandService;
 import subway.station.application.StationQueryService;
-import subway.station.application.dto.request.StationInfoResponseDto;
-import subway.station.ui.dto.reqest.StationCreateRequest;
-import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
-import subway.station.ui.dto.response.StationInfosResponse;
+import subway.station.dto.request.StationCreateRequest;
+import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationUpdateInfoRequest;
+import subway.station.dto.response.StationInfosResponse;
 
 @RestController
 @RequestMapping("/stations")

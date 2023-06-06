@@ -4,13 +4,13 @@ import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.line.application.dto.response.LineResponseDto;
 import subway.line.application.exception.LineNotFoundException;
-import subway.line.domain.Line;
-import subway.line.domain.LineRepository;
-import subway.line.ui.dto.request.LineAddStationRequest;
-import subway.line.ui.dto.request.LineCreateRequest;
-import subway.line.ui.dto.request.LineUpdateInfoRequest;
+import subway.line.domain.line.Line;
+import subway.line.domain.line.LineRepository;
+import subway.line.dto.request.LineAddStationRequest;
+import subway.line.dto.request.LineCreateRequest;
+import subway.line.dto.request.LineUpdateInfoRequest;
+import subway.line.dto.response.LineResponseDto;
 import subway.station.domain.StationDeletedEvent;
 
 @Service

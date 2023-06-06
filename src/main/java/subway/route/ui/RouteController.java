@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.route.RouteAssembler;
 import subway.route.application.RouteQueryService;
-import subway.route.application.dto.response.RouteFindResponse;
-import subway.route.application.dto.response.RouteFindResponseDto;
-import subway.route.ui.dto.request.RouteFindRequest;
+import subway.route.dto.request.RouteFindRequest;
+import subway.route.dto.response.RouteFindResponse;
+import subway.route.dto.response.RouteFindResponseDto;
 
 @RestController
 @RequestMapping("/routes")

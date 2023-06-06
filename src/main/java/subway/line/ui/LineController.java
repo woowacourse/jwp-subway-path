@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.LineCommandService;
 import subway.line.application.LineQueryService;
-import subway.line.application.dto.response.LineResponseDto;
-import subway.line.ui.dto.request.LineAddStationRequest;
-import subway.line.ui.dto.request.LineCreateRequest;
-import subway.line.ui.dto.request.LineUpdateInfoRequest;
-import subway.line.ui.dto.response.LinesResponseDto;
+import subway.line.dto.request.LineAddStationRequest;
+import subway.line.dto.request.LineCreateRequest;
+import subway.line.dto.request.LineUpdateInfoRequest;
+import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LinesResponseDto;
 
 @RestController
 @RequestMapping("/lines")

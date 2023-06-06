@@ -19,11 +19,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.webmvc.AbstractControllerTest;
-import subway.station.application.dto.request.StationInfoResponseDto;
-import subway.station.ui.dto.reqest.StationCreateRequest;
-import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
-import subway.station.ui.dto.response.StationInfoResponse;
-import subway.station.ui.dto.response.StationInfosResponse;
+import subway.station.dto.request.StationCreateRequest;
+import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationUpdateInfoRequest;
+import subway.station.dto.response.StationInfoResponse;
+import subway.station.dto.response.StationInfosResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class StationControllerTest extends AbstractControllerTest {

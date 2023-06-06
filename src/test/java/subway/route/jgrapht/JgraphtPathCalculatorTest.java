@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.route.application.dto.request.PathRequestDto;
-import subway.route.application.dto.response.PathResponseDto;
+import subway.route.dto.request.PathRequestDto;
+import subway.route.dto.response.PathResponseDto;
 import subway.route.domain.InterStationEdge;
 
 @SuppressWarnings("NonAsciiCharacters")

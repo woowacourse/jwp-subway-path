@@ -13,7 +13,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.interstation.domain.exception.InterStationException;
+import subway.line.domain.interstation.InterStation;
+import subway.line.domain.interstation.exception.InterStationException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("구간은")

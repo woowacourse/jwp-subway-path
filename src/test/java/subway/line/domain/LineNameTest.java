@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.line.domain.exception.LineNameException;
+import subway.line.domain.line.LineName;
+import subway.line.domain.line.exception.LineNameException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("노선 이름은")

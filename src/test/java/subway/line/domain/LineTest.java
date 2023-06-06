@@ -11,7 +11,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.interstation.domain.InterStations;
+import subway.line.domain.interstation.InterStations;
+import subway.line.domain.line.Line;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("노선은")

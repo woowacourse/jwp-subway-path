@@ -7,10 +7,10 @@ import static subway.common.acceptance.CommonSteps.doPost;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.line.application.dto.response.LineResponseDto;
-import subway.line.ui.dto.request.LineAddStationRequest;
-import subway.line.ui.dto.request.LineCreateRequest;
-import subway.line.ui.dto.response.LinesResponseDto;
+import subway.line.dto.request.LineAddStationRequest;
+import subway.line.dto.request.LineCreateRequest;
+import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LinesResponseDto;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {

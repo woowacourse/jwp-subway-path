@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import subway.line.application.LineQueryService;
-import subway.line.application.dto.response.InterStationResponseDto;
-import subway.line.application.dto.response.LineResponseDto;
+import subway.line.dto.response.InterStationResponseDto;
+import subway.line.dto.response.LineResponseDto;
 import subway.route.domain.InterStationEdge;
 import subway.route.domain.RouteAllEdgesUseCase;
 

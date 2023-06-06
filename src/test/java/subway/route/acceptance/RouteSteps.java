@@ -6,9 +6,9 @@ import static subway.common.acceptance.CommonSteps.doPost;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import subway.route.application.dto.response.RouteFindResponse;
-import subway.route.ui.dto.request.RouteFindRequest;
-import subway.route.ui.dto.response.RouteEdgeResponse;
+import subway.route.dto.request.RouteFindRequest;
+import subway.route.dto.response.RouteEdgeResponse;
+import subway.route.dto.response.RouteFindResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 class RouteSteps {

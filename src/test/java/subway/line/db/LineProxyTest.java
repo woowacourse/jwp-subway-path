@@ -10,7 +10,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.interstation.domain.InterStation;
+import subway.line.db.line.LineProxy;
+import subway.line.domain.interstation.InterStation;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("LineProxy 는")

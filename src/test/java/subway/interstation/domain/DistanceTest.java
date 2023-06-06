@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.interstation.domain.exception.DistanceException;
+import subway.line.domain.interstation.Distance;
+import subway.line.domain.interstation.exception.DistanceException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("거리는")

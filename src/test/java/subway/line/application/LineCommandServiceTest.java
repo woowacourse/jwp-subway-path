@@ -8,14 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.interstation.domain.InterStation;
-import subway.interstation.domain.InterStations;
-import subway.line.application.dto.response.InterStationResponseDto;
-import subway.line.application.dto.response.LineResponseDto;
 import subway.line.db.FakeLineRepository;
-import subway.line.domain.Line;
-import subway.line.ui.dto.request.LineCreateRequest;
-import subway.line.ui.dto.request.LineUpdateInfoRequest;
+import subway.line.domain.interstation.InterStation;
+import subway.line.domain.interstation.InterStations;
+import subway.line.domain.line.Line;
+import subway.line.dto.request.LineCreateRequest;
+import subway.line.dto.request.LineUpdateInfoRequest;
+import subway.line.dto.response.InterStationResponseDto;
+import subway.line.dto.response.LineResponseDto;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class LineCommandServiceTest {

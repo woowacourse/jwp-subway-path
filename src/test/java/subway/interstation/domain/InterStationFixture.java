@@ -5,6 +5,8 @@ import static subway.station.domain.StationFixture.두둠_역_id_3;
 import static subway.station.domain.StationFixture.처음보는_역_id_4;
 import static subway.station.domain.StationFixture.코다_역_id_1;
 
+import subway.line.domain.interstation.InterStation;
+
 public class InterStationFixture {
 
     public static final InterStation 코다에서_누누_구간_id_1 = new InterStation(1L, 코다_역_id_1.getId(), 누누_역_id_2.getId(), 10);

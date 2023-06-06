@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.line.application.LineQueryService;
-import subway.line.db.LineRepositoryImpl;
-import subway.line.domain.Line;
-import subway.line.domain.LineRepository;
+import subway.line.db.line.LineRepositoryImpl;
+import subway.line.domain.line.Line;
+import subway.line.domain.line.LineRepository;
 import subway.route.domain.InterStationEdge;
 import subway.route.line.LineEdgesAdapter;
 

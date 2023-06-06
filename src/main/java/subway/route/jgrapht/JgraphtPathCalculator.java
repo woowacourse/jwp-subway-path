@@ -4,11 +4,11 @@ import java.util.List;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import subway.route.application.dto.request.PathRequestDto;
-import subway.route.application.dto.response.PathResponseDto;
 import subway.route.domain.InterStationEdge;
 import subway.route.domain.PathCalculator;
 import subway.route.domain.exception.PathNotFoundException;
+import subway.route.dto.request.PathRequestDto;
+import subway.route.dto.response.PathResponseDto;
 
 @Component
 public class JgraphtPathCalculator implements PathCalculator {

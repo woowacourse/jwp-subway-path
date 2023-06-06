@@ -17,12 +17,12 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import subway.common.webmvc.AbstractControllerTest;
-import subway.line.application.dto.request.LineCreateRequestDto;
-import subway.line.application.dto.response.InterStationResponseDto;
-import subway.line.application.dto.response.LineResponseDto;
-import subway.line.ui.dto.request.LineCreateRequest;
-import subway.line.ui.dto.request.LineUpdateInfoRequest;
-import subway.line.ui.dto.response.LinesResponseDto;
+import subway.line.dto.request.LineCreateRequest;
+import subway.line.dto.request.LineCreateRequestDto;
+import subway.line.dto.request.LineUpdateInfoRequest;
+import subway.line.dto.response.InterStationResponseDto;
+import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LinesResponseDto;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class LineControllerTest extends AbstractControllerTest {

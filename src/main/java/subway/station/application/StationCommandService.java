@@ -3,12 +3,12 @@ package subway.station.application;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.station.application.dto.request.StationInfoResponseDto;
 import subway.station.domain.Station;
 import subway.station.domain.StationDeletedEvent;
 import subway.station.domain.StationRepository;
-import subway.station.ui.dto.reqest.StationCreateRequest;
-import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
+import subway.station.dto.request.StationCreateRequest;
+import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationUpdateInfoRequest;
 
 @Service
 @Transactional
