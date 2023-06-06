@@ -3,13 +3,16 @@ package subway.route.domain.distance;
 public class MiddleDistancePolicy implements DistanceFareStrategy {
 
     private static final long BASE_FARE = 1250L;
-    private static final int MAXIMUM_DISTANCE = 50;
-    private static final int MINIMUM_DISTANCE = 10;
+    private static final long MAXIMUM_DISTANCE = 50L;
+    private static final long MINIMUM_DISTANCE = 10L;
+    private static final int AMOUNT_PER_UNIT = 100;
+    private static final int UNIT_SIZE = 5;
 
     @Override
     public long calculateFare(long distance) {
         long removeTenKM = distanceForCalculation(distance);
-        return (long) (BASE_FARE + (Math.ceil((removeTenKM + 4) / 5) * 100));
+        long unit = (removeTenKM + UNIT_SIZE - 1) / UNIT_SIZE;
+        return BASE_FARE + unit * AMOUNT_PER_UNIT;
     }
 
     private long distanceForCalculation(long distance) {

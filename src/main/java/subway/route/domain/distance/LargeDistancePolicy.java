@@ -4,11 +4,14 @@ public class LargeDistancePolicy implements DistanceFareStrategy {
 
     private static final long BASE_FARE = 1250L + 800L;
     private static final int MINIMUM_DISTANCE = 50;
+    private static final int AMOUNT_PER_UNIT = 100;
+    private static final int UNIT_SIZE = 8;
 
     @Override
     public long calculateFare(long distance) {
         long removeFiftyKM = distanceForCalculation(distance);
-        return BASE_FARE + (long) (Math.ceil((removeFiftyKM + 7) / 8) * 100);
+        long unit = (removeFiftyKM + UNIT_SIZE - 1) / UNIT_SIZE;
+        return BASE_FARE + unit * AMOUNT_PER_UNIT;
     }
 
     private long distanceForCalculation(long distance) {
