@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.route.dto.request.PathRequestDto;
-import subway.route.dto.response.PathResponseDto;
 import subway.route.domain.InterStationEdge;
+import subway.route.dto.request.PathRequest;
+import subway.route.dto.response.PathResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -20,7 +20,7 @@ class JgraphtPathCalculatorTest {
     void 경로를_계산한다() {
         // given
         JgraphtPathCalculator jgraphtPathCalculator = new JgraphtPathCalculator();
-        PathRequestDto pathRequest = new PathRequestDto(1L, 2L,
+        PathRequest pathRequest = new PathRequest(1L, 2L,
                 List.of(new InterStationEdge(1L, 2L, 3L, 4L)));
 
         // when
@@ -28,6 +28,6 @@ class JgraphtPathCalculatorTest {
 
         // then
         assertThat(result).usingRecursiveComparison()
-                .isEqualTo(new PathResponseDto(3, List.of(new InterStationEdge(1L, 2L, 3L, 4L))));
+                .isEqualTo(new PathResponse(3, List.of(new InterStationEdge(1L, 2L, 3L, 4L))));
     }
 }

@@ -20,9 +20,8 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.webmvc.AbstractControllerTest;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
-import subway.station.dto.response.StationInfoResponse;
 import subway.station.dto.response.StationInfosResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -31,11 +30,12 @@ class StationControllerTest extends AbstractControllerTest {
     @Test
     void 정상적으로_생성된다() throws Exception {
         // when
-        StationInfoResponseDto stationInfoResponseDto = new StationInfoResponseDto(1L, "강남역");
+        StationInfoResponse stationInfoResponse = new StationInfoResponse(1L, "강남역");
         given(stationCommandService.create(any()))
-                .willReturn(stationInfoResponseDto);
+                .willReturn(stationInfoResponse);
         String requestBody = objectMapper.writeValueAsString(new StationCreateRequest("강남역"));
-        String expected = objectMapper.writeValueAsString(new StationInfoResponse(1L, "강남역"));
+        String expected = objectMapper.writeValueAsString(
+                new subway.station.dto.response.StationInfoResponse(1L, "강남역"));
 
         // then
         mockMvc.perform(post("/stations")
@@ -57,8 +57,9 @@ class StationControllerTest extends AbstractControllerTest {
     @Test
     void 정상적으로_조회된다() throws Exception {
         given(stationQueryService.findStationInfoById(1))
-                .willReturn(new StationInfoResponseDto(1, "name"));
-        String expected = objectMapper.writeValueAsString(new StationInfoResponse(1, "name"));
+                .willReturn(new StationInfoResponse(1, "name"));
+        String expected = objectMapper.writeValueAsString(
+                new subway.station.dto.response.StationInfoResponse(1, "name"));
 
         mockMvc.perform(get("/stations/1"))
 
@@ -69,8 +70,8 @@ class StationControllerTest extends AbstractControllerTest {
     @Test
     void 정상적으로_전체가_조회된다() throws Exception {
         // given
-        List<StationInfoResponseDto> input = List.of(new StationInfoResponseDto(1L, "name1"),
-                new StationInfoResponseDto(2L, "name2"));
+        List<StationInfoResponse> input = List.of(new StationInfoResponse(1L, "name1"),
+                new StationInfoResponse(2L, "name2"));
         given(stationQueryService.findAll())
                 .willReturn(input);
         String result = objectMapper.writeValueAsString(new StationInfosResponse(input));

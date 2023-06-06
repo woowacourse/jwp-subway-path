@@ -17,8 +17,8 @@ import subway.line.application.LineQueryService;
 import subway.line.dto.request.LineAddStationRequest;
 import subway.line.dto.request.LineCreateRequest;
 import subway.line.dto.request.LineUpdateInfoRequest;
-import subway.line.dto.response.LineResponseDto;
-import subway.line.dto.response.LinesResponseDto;
+import subway.line.dto.response.LineResponse;
+import subway.line.dto.response.LinesResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -33,17 +33,17 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponseDto> createLine(@RequestBody @Valid LineCreateRequest request) {
-        LineResponseDto responseDto = lineCommandService.createLine(request);
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineCreateRequest request) {
+        LineResponse responseDto = lineCommandService.createLine(request);
         return ResponseEntity
                 .created(URI.create("/lines/" + responseDto.getId()))
                 .body(responseDto);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<LineResponseDto> addLineStation(@PathVariable Long id,
+    public ResponseEntity<LineResponse> addLineStation(@PathVariable Long id,
             @RequestBody LineAddStationRequest request) {
-        LineResponseDto responseDto = lineCommandService.addInterStation(id, request);
+        LineResponse responseDto = lineCommandService.addInterStation(id, request);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -54,14 +54,14 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<LinesResponseDto> findAllLines() {
-        List<LineResponseDto> resultDtos = lineQueryService.findAllLines();
-        return ResponseEntity.ok(new LinesResponseDto(resultDtos));
+    public ResponseEntity<LinesResponse> findAllLines() {
+        List<LineResponse> resultDtos = lineQueryService.findAllLines();
+        return ResponseEntity.ok(new LinesResponse(resultDtos));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponseDto> findById(@PathVariable Long id) {
-        LineResponseDto resultDto = lineQueryService.findById(id);
+    public ResponseEntity<LineResponse> findById(@PathVariable Long id) {
+        LineResponse resultDto = lineQueryService.findById(id);
         return ResponseEntity.ok(resultDto);
     }
 

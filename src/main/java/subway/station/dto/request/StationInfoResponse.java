@@ -1,11 +1,11 @@
 package subway.station.dto.request;
 
-public class StationInfoResponseDto {
+public class StationInfoResponse {
 
     private final long id;
     private final String name;
 
-    public StationInfoResponseDto(long id, String name) {
+    public StationInfoResponse(long id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -12,7 +12,7 @@ import subway.line.application.exception.LineNotFoundException;
 import subway.line.db.FakeLineRepository;
 import subway.line.domain.interstation.InterStation;
 import subway.line.domain.line.Line;
-import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class LineQueryServiceTest {
@@ -35,7 +35,7 @@ class LineQueryServiceTest {
         )));
 
         //when
-        LineResponseDto result = lineQueryService.findById(1L);
+        LineResponse result = lineQueryService.findById(1L);
 
         //then
         assertThat(result).isNotNull();
@@ -64,7 +64,7 @@ class LineQueryServiceTest {
         )));
 
         //when
-        List<LineResponseDto> result = lineQueryService.findAllLines();
+        List<LineResponse> result = lineQueryService.findAllLines();
 
         //then
         assertThat(result).hasSize(1);

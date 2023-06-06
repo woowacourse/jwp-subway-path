@@ -1,10 +1,10 @@
 package subway.route.domain;
 
-import subway.route.dto.request.PathRequestDto;
-import subway.route.dto.response.PathResponseDto;
+import subway.route.dto.request.PathRequest;
+import subway.route.dto.response.PathResponse;
 
 public interface PathCalculator {
 
 
-    PathResponseDto calculatePath(PathRequestDto requestDto);
+    PathResponse calculatePath(PathRequest requestDto);
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.StationCommandService;
 import subway.station.application.StationQueryService;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
 import subway.station.dto.response.StationInfosResponse;
 
@@ -33,19 +33,19 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<StationInfosResponse> findAll() {
-        List<StationInfoResponseDto> result = stationQueryService.findAll();
+        List<StationInfoResponse> result = stationQueryService.findAll();
         return ResponseEntity.ok(new StationInfosResponse(result));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationInfoResponseDto> findStationInfoById(@PathVariable Long id) {
-        StationInfoResponseDto stationInfoResponse = stationQueryService.findStationInfoById(id);
+    public ResponseEntity<StationInfoResponse> findStationInfoById(@PathVariable Long id) {
+        StationInfoResponse stationInfoResponse = stationQueryService.findStationInfoById(id);
         return ResponseEntity.ok(stationInfoResponse);
     }
 
     @PostMapping
-    public ResponseEntity<StationInfoResponseDto> create(@RequestBody @Valid StationCreateRequest request) {
-        StationInfoResponseDto response = stationCommandService.create(request);
+    public ResponseEntity<StationInfoResponse> create(@RequestBody @Valid StationCreateRequest request) {
+        StationInfoResponse response = stationCommandService.create(request);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 

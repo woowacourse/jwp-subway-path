@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.exception.LineNotFoundException;
 import subway.line.domain.line.Line;
 import subway.line.domain.line.LineRepository;
-import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LineResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,16 +19,16 @@ public class LineQueryService {
         this.lineRepository = lineRepository;
     }
 
-    public List<LineResponseDto> findAllLines() {
+    public List<LineResponse> findAllLines() {
         return lineRepository.findAll()
                 .stream()
-                .map(LineResponseDto::from)
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public LineResponseDto findById(Long id) {
+    public LineResponse findById(Long id) {
         Line line = lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-        return LineResponseDto.from(line);
+        return LineResponse.from(line);
     }
 }

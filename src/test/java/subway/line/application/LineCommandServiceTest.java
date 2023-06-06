@@ -14,8 +14,8 @@ import subway.line.domain.interstation.InterStations;
 import subway.line.domain.line.Line;
 import subway.line.dto.request.LineCreateRequest;
 import subway.line.dto.request.LineUpdateInfoRequest;
-import subway.line.dto.response.InterStationResponseDto;
-import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.InterStationResponse;
+import subway.line.dto.response.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class LineCommandServiceTest {
@@ -31,9 +31,9 @@ class LineCommandServiceTest {
 
     @Test
     void 정상적으로_생성된다() {
-        LineResponseDto result = lineCommandService.createLine(new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
-        LineResponseDto expected = new LineResponseDto(1L, "2호선", "초록색", List.of(
-                new InterStationResponseDto(1L, 1L, 2L, 10)
+        LineResponse result = lineCommandService.createLine(new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
+        LineResponse expected = new LineResponse(1L, "2호선", "초록색", List.of(
+                new InterStationResponse(1L, 1L, 2L, 10)
         ));
 
         assertSoftly(

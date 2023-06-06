@@ -10,8 +10,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.station.db.FakeStationRepository;
-import subway.station.dto.request.StationInfoResponseDto;
-import subway.station.dto.response.StationInfoResponse;
+import subway.station.dto.request.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 조회하는 서비스 테스트")
@@ -47,10 +46,11 @@ class StationQueryServiceTest {
         fakeStationRepository.save(코다_역_id_1);
 
         // when
-        StationInfoResponseDto result = stationQueryService.findStationInfoById(코다_역_id_1.getId());
+        StationInfoResponse result = stationQueryService.findStationInfoById(코다_역_id_1.getId());
 
         // then
         assertThat(result).usingRecursiveComparison()
-                .isEqualTo(new StationInfoResponse(코다_역_id_1.getId(), 코다_역_id_1.getName().getValue()));
+                .isEqualTo(new subway.station.dto.response.StationInfoResponse(코다_역_id_1.getId(),
+                        코다_역_id_1.getName().getValue()));
     }
 }

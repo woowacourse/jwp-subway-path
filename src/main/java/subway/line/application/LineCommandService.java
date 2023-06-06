@@ -10,7 +10,7 @@ import subway.line.domain.line.LineRepository;
 import subway.line.dto.request.LineAddStationRequest;
 import subway.line.dto.request.LineCreateRequest;
 import subway.line.dto.request.LineUpdateInfoRequest;
-import subway.line.dto.response.LineResponseDto;
+import subway.line.dto.response.LineResponse;
 import subway.station.domain.StationDeletedEvent;
 
 @Service
@@ -23,24 +23,24 @@ public class LineCommandService {
         this.lineRepository = lineRepository;
     }
 
-    public LineResponseDto createLine(LineCreateRequest lineCreateRequestDto) {
+    public LineResponse createLine(LineCreateRequest lineCreateRequestDto) {
         Line line = new Line(lineCreateRequestDto.getName(), lineCreateRequestDto.getColor(),
                 lineCreateRequestDto.getUpStationId(), lineCreateRequestDto.getDownStationId(),
                 lineCreateRequestDto.getDistance());
         Line savedLine = lineRepository.save(line);
-        return LineResponseDto.from(savedLine);
+        return LineResponse.from(savedLine);
     }
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    public LineResponseDto addInterStation(long id, LineAddStationRequest request) {
+    public LineResponse addInterStation(long id, LineAddStationRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
         line.addInterStation(request.getUpStationId(), request.getDownStationId(), request.getNewStationId(),
                 request.getDistance());
         Line result = lineRepository.update(line);
-        return LineResponseDto.from(result);
+        return LineResponse.from(result);
     }
 
     @EventListener(StationDeletedEvent.class)

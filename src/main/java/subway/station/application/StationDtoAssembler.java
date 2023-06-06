@@ -1,7 +1,7 @@
 package subway.station.application;
 
 import subway.station.domain.Station;
-import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationInfoResponse;
 
 public class StationDtoAssembler {
 
@@ -9,7 +9,7 @@ public class StationDtoAssembler {
     }
 
 
-    public static StationInfoResponseDto toStationInfoResponseDto(Station station) {
-        return new StationInfoResponseDto(station.getId(), station.getName().getValue());
+    public static StationInfoResponse toStationInfoResponseDto(Station station) {
+        return new StationInfoResponse(station.getId(), station.getName().getValue());
     }
 }

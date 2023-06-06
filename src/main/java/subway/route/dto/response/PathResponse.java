@@ -3,12 +3,12 @@ package subway.route.dto.response;
 import java.util.List;
 import subway.route.domain.InterStationEdge;
 
-public class PathResponseDto {
+public class PathResponse {
 
     private final int distance;
     private final List<InterStationEdge> stations;
 
-    public PathResponseDto(int distance, List<InterStationEdge> stations) {
+    public PathResponse(int distance, List<InterStationEdge> stations) {
         this.distance = distance;
         this.stations = stations;
     }

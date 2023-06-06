@@ -6,10 +6,10 @@ import subway.route.domain.FareCalculator;
 import subway.route.domain.InterStationEdge;
 import subway.route.domain.PathCalculator;
 import subway.route.domain.RouteAllEdgesUseCase;
-import subway.route.dto.request.PathRequestDto;
-import subway.route.dto.request.RouteFindRequestDto;
-import subway.route.dto.response.PathResponseDto;
-import subway.route.dto.response.RouteFindResponseDto;
+import subway.route.dto.request.PathRequest;
+import subway.route.dto.request.RouteFindRequest;
+import subway.route.dto.response.PathResponse;
+import subway.route.dto.response.RouteFindResponse;
 
 @Service
 public class RouteQueryService {
@@ -22,13 +22,12 @@ public class RouteQueryService {
         this.pathCalculator = pathCalculator;
     }
 
-    public RouteFindResponseDto findRoute(RouteFindRequestDto requestDto) {
+    public RouteFindResponse findRoute(RouteFindRequest requestDto) {
         List<InterStationEdge> allEdges = routeAllEdgesUseCase.findAllEdges();
-        PathResponseDto pathResponseDto = pathCalculator.calculatePath(
-                new PathRequestDto(requestDto.getSource(), requestDto.getTarget(), allEdges));
+        PathResponse pathResponse = pathCalculator.calculatePath(
+                new PathRequest(requestDto.getSourceId(), requestDto.getTargetId(), allEdges));
         FareCalculator fareCalculator = new FareCalculator();
-        long fare = fareCalculator.calculateFare(pathResponseDto.getDistance());
-        return new RouteFindResponseDto(RouteDtoAssembler.toRouteEdgeResponseDto(pathResponseDto.getStations()),
-                pathResponseDto.getDistance(), fare);
+        long fare = fareCalculator.calculateFare(pathResponse.getDistance());
+        return new RouteFindResponse(pathResponse.getStations(), pathResponse.getDistance(), fare);
     }
 }

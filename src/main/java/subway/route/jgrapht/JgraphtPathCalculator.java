@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 import subway.route.domain.InterStationEdge;
 import subway.route.domain.PathCalculator;
 import subway.route.domain.exception.PathNotFoundException;
-import subway.route.dto.request.PathRequestDto;
-import subway.route.dto.response.PathResponseDto;
+import subway.route.dto.request.PathRequest;
+import subway.route.dto.response.PathResponse;
 
 @Component
 public class JgraphtPathCalculator implements PathCalculator {
 
     @Override
-    public PathResponseDto calculatePath(PathRequestDto requestDto) {
+    public PathResponse calculatePath(PathRequest requestDto) {
         DijkstraShortestPath<Long, InterStationEdge> dijkstraShortestPath = drawDijkstraGraph(
                 requestDto);
         try {
@@ -23,21 +23,21 @@ public class JgraphtPathCalculator implements PathCalculator {
 
             List<InterStationEdge> stations = dijkstraShortestPath.getPath(requestDto.getSourceId(),
                     requestDto.getTargetId()).getEdgeList();
-            return new PathResponseDto((int) distance, stations);
+            return new PathResponse((int) distance, stations);
         } catch (Exception e) {
             throw new PathNotFoundException();
         }
     }
 
     private DijkstraShortestPath<Long, InterStationEdge> drawDijkstraGraph(
-            PathRequestDto requestDto) {
+            PathRequest requestDto) {
         WeightedMultigraph<Long, InterStationEdge> graph
                 = new WeightedMultigraph<>(InterStationEdge.class);
         drawGraph(requestDto, graph);
         return new DijkstraShortestPath<>(graph);
     }
 
-    private void drawGraph(PathRequestDto requestDto, WeightedMultigraph<Long, InterStationEdge> graph) {
+    private void drawGraph(PathRequest requestDto, WeightedMultigraph<Long, InterStationEdge> graph) {
         requestDto.getGraph().forEach(edge -> {
             graph.addVertex(edge.getUpStationId());
             graph.addVertex(edge.getDownStationId());

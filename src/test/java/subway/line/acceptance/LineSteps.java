@@ -9,8 +9,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.line.dto.request.LineAddStationRequest;
 import subway.line.dto.request.LineCreateRequest;
-import subway.line.dto.response.LineResponseDto;
-import subway.line.dto.response.LinesResponseDto;
+import subway.line.dto.response.LineResponse;
+import subway.line.dto.response.LinesResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
@@ -32,7 +32,7 @@ public class LineSteps {
     }
 
     public static void 노선_목록_크기_비교(ExtractableResponse<Response> 노선_목록_조회_요청_결과, int 크기) {
-        assertThat(노선_목록_조회_요청_결과.as(LinesResponseDto.class).getLines()).hasSize(크기);
+        assertThat(노선_목록_조회_요청_결과.as(LinesResponse.class).getLines()).hasSize(크기);
     }
 
     public static ExtractableResponse<Response> 노선_삭제_요청(Long 노선_ID) {
@@ -40,7 +40,7 @@ public class LineSteps {
     }
 
     public static long 노선_생성_결과에서_id_가져오기(ExtractableResponse<Response> 노선_생성_요청_결과) {
-        return 노선_생성_요청_결과.as(LineResponseDto.class).getId();
+        return 노선_생성_요청_결과.as(LineResponse.class).getId();
     }
 
     public static ExtractableResponse<Response> 노선에서_역_추가_요청(Long 노선_ID, Long 상행선_역_ID, Long 하행선_역_ID,

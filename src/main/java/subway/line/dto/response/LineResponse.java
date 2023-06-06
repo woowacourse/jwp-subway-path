@@ -3,25 +3,25 @@ package subway.line.dto.response;
 import java.util.List;
 import subway.line.domain.line.Line;
 
-public class LineResponseDto {
+public class LineResponse {
 
     private final Long id;
     private final String name;
     private final String color;
-    private final List<InterStationResponseDto> interStations;
+    private final List<InterStationResponse> interStations;
 
-    public LineResponseDto(Long id, String name, String color,
-            List<InterStationResponseDto> interStations) {
+    public LineResponse(Long id, String name, String color,
+            List<InterStationResponse> interStations) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.interStations = interStations;
     }
 
-    public static LineResponseDto from(Line savedLine) {
-        return new LineResponseDto(savedLine.getId(), savedLine.getName().getValue(),
+    public static LineResponse from(Line savedLine) {
+        return new LineResponse(savedLine.getId(), savedLine.getName().getValue(),
                 savedLine.getColor().getValue(),
-                InterStationResponseDto.from(savedLine.getInterStations().getInterStations()));
+                InterStationResponse.from(savedLine.getInterStations().getInterStations()));
     }
 
     public Long getId() {
@@ -36,7 +36,7 @@ public class LineResponseDto {
         return color;
     }
 
-    public List<InterStationResponseDto> getInterStations() {
+    public List<InterStationResponse> getInterStations() {
         return interStations;
     }
 }

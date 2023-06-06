@@ -1,20 +1,22 @@
 package subway.route.dto.response;
 
 import java.util.List;
+import subway.route.domain.InterStationEdge;
 
 public class RouteFindResponse {
 
-    private long distance;
-    private long fare;
-    private List<RouteEdgeResponse> stations;
+    private final List<InterStationEdge> stations;
+    private final long distance;
+    private final long fare;
 
-    private RouteFindResponse() {
-    }
-
-    public RouteFindResponse(List<RouteEdgeResponse> stations, long distance, long fare) {
+    public RouteFindResponse(List<InterStationEdge> stations, long distance, long fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
+    }
+
+    public List<InterStationEdge> getStations() {
+        return stations;
     }
 
     public long getDistance() {
@@ -23,9 +25,5 @@ public class RouteFindResponse {
 
     public long getFare() {
         return fare;
-    }
-
-    public List<RouteEdgeResponse> getStations() {
-        return stations;
     }
 }

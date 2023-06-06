@@ -7,7 +7,7 @@ import subway.station.domain.Station;
 import subway.station.domain.StationDeletedEvent;
 import subway.station.domain.StationRepository;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponseDto;
+import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
 
 @Service
@@ -23,7 +23,7 @@ public class StationCommandService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public StationInfoResponseDto create(StationCreateRequest requestDto) {
+    public StationInfoResponse create(StationCreateRequest requestDto) {
         Station station = stationRepository.save(new Station(requestDto.getName()));
         return StationDtoAssembler.toStationInfoResponseDto(station);
     }
