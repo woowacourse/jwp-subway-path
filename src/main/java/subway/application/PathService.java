@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.fee.FeeStrategy;
 import subway.domain.path.PathStrategy;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final SectionDao sectionDao;

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class SectionService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -30,6 +30,7 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
+    @Transactional
     public Long insertSection(SectionRequest request) {
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
@@ -108,6 +109,7 @@ public class SectionService {
         return sectionDao.insert(insertSection);
     }
 
+    @Transactional
     public void deleteStation(SectionDeleteRequest request) {
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
