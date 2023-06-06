@@ -38,7 +38,7 @@ public class JgraphtPathCalculator implements PathCalculator {
     }
 
     private void drawGraph(PathRequestDto requestDto, WeightedMultigraph<Long, InterStationEdge> graph) {
-        requestDto.getGraph().getEdges().forEach(edge -> {
+        requestDto.getGraph().forEach(edge -> {
             graph.addVertex(edge.getUpStationId());
             graph.addVertex(edge.getDownStationId());
             graph.addEdge(edge.getUpStationId(), edge.getDownStationId(), edge);

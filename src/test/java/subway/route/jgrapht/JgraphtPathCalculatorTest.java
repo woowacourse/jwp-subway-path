@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.route.application.dto.request.PathRequestDto;
 import subway.route.application.dto.response.PathResponseDto;
-import subway.route.domain.Edges;
 import subway.route.domain.InterStationEdge;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -22,7 +21,7 @@ class JgraphtPathCalculatorTest {
         // given
         JgraphtPathCalculator jgraphtPathCalculator = new JgraphtPathCalculator();
         PathRequestDto pathRequest = new PathRequestDto(1L, 2L,
-                new Edges(List.of(new InterStationEdge(1L, 2L, 3L, 4L))));
+                List.of(new InterStationEdge(1L, 2L, 3L, 4L)));
 
         // when
         var result = jgraphtPathCalculator.calculatePath(pathRequest);

@@ -9,4 +9,3 @@ public class FareCalculator {
         return distancePolicy.calculateFare(distance);
     }
 }
- 

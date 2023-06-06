@@ -15,7 +15,6 @@ import subway.line.application.LineQueryService;
 import subway.line.db.LineRepositoryImpl;
 import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
-import subway.route.domain.Edges;
 import subway.route.domain.InterStationEdge;
 import subway.route.line.LineEdgesAdapter;
 
@@ -45,10 +44,10 @@ class LineEdgesAdapterTest {
     @Test
     void 정상적으로_모든_역을_그래프_형태로_반환한다() {
         // when
-        Edges allEdges = lineEdgesAdapter.findAllEdges();
+        List<InterStationEdge> allEdges = lineEdgesAdapter.findAllEdges();
         // then
 
-        assertThat(allEdges.getEdges()).usingRecursiveComparison()
+        assertThat(allEdges).usingRecursiveComparison()
                 .ignoringExpectedNullFields().isEqualTo(List.of(
                         new InterStationEdge(3L, 4L, 3L, line2호선_id),
                         new InterStationEdge(4L, 5L, 3L, line3호선_id)));

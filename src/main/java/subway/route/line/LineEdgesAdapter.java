@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import subway.line.application.LineQueryService;
 import subway.line.application.dto.response.InterStationResponseDto;
 import subway.line.application.dto.response.LineResponseDto;
-import subway.route.domain.Edges;
 import subway.route.domain.InterStationEdge;
 import subway.route.domain.RouteAllEdgesUseCase;
 
@@ -20,13 +19,13 @@ public class LineEdgesAdapter implements RouteAllEdgesUseCase {
     }
 
     @Override
-    public Edges findAllEdges() {
+    public List<InterStationEdge> findAllEdges() {
         List<LineResponseDto> allLines = lineQueryService.findAllLines();
         List<InterStationEdge> edges = new ArrayList<>();
         for (LineResponseDto lineResponseDto : allLines) {
             addEdges(edges, lineResponseDto);
         }
-        return new Edges(edges);
+        return edges;
     }
 
     private void addEdges(List<InterStationEdge> edges, LineResponseDto lineResponseDto) {

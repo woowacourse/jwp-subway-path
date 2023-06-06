@@ -1,14 +1,15 @@
 package subway.route.application.dto.request;
 
-import subway.route.domain.Edges;
+import java.util.List;
+import subway.route.domain.InterStationEdge;
 
 public class PathRequestDto {
 
     private final long sourceId;
     private final long targetId;
-    private final Edges edges;
+    private final List<InterStationEdge> edges;
 
-    public PathRequestDto(long sourceId, long targetId, Edges edges) {
+    public PathRequestDto(long sourceId, long targetId, List<InterStationEdge> edges) {
         this.sourceId = sourceId;
         this.targetId = targetId;
         this.edges = edges;
@@ -22,7 +23,7 @@ public class PathRequestDto {
         return targetId;
     }
 
-    public Edges getGraph() {
+    public List<InterStationEdge> getGraph() {
         return edges;
     }
 }
