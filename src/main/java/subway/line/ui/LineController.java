@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.LineCommandService;
 import subway.line.application.LineQueryService;
-import subway.line.application.dto.request.LineCreateRequestDto;
 import subway.line.application.dto.response.LineResponseDto;
 import subway.line.ui.dto.request.LineAddStationRequest;
 import subway.line.ui.dto.request.LineCreateRequest;
 import subway.line.ui.dto.request.LineUpdateInfoRequest;
-import subway.line.ui.dto.response.LineResponse;
-import subway.line.ui.dto.response.LinesResponse;
+import subway.line.ui.dto.response.LinesResponseDto;
 
 @RestController
 @RequestMapping("/lines")
@@ -35,20 +33,18 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineCreateRequest request) {
-        LineCreateRequestDto requestDto = LineAssembler.toLineCreateRequestDto(request);
-        LineResponseDto responseDto = lineCommandService.createLine(requestDto);
+    public ResponseEntity<LineResponseDto> createLine(@RequestBody @Valid LineCreateRequest request) {
+        LineResponseDto responseDto = lineCommandService.createLine(request);
         return ResponseEntity
                 .created(URI.create("/lines/" + responseDto.getId()))
-                .body(LineAssembler.toLineResponse(responseDto));
+                .body(responseDto);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<LineResponse> addLineStation(@PathVariable Long id,
+    public ResponseEntity<LineResponseDto> addLineStation(@PathVariable Long id,
             @RequestBody LineAddStationRequest request) {
-        LineResponseDto responseDto = lineCommandService.addInterStation(
-                LineAssembler.toLineAddInterStationRequestDto(id, request));
-        return ResponseEntity.ok(LineAssembler.toLineResponse(responseDto));
+        LineResponseDto responseDto = lineCommandService.addInterStation(id, request);
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
@@ -58,21 +54,21 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<LinesResponse> findAllLines() {
+    public ResponseEntity<LinesResponseDto> findAllLines() {
         List<LineResponseDto> resultDtos = lineQueryService.findAllLines();
-        return ResponseEntity.ok(LineAssembler.toLinesResponse(resultDtos));
+        return ResponseEntity.ok(new LinesResponseDto(resultDtos));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<LineResponseDto> findById(@PathVariable Long id) {
         LineResponseDto resultDto = lineQueryService.findById(id);
-        return ResponseEntity.ok(LineAssembler.toLineResponse(resultDto));
+        return ResponseEntity.ok(resultDto);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateLineInfo(@PathVariable Long id,
             @RequestBody @Valid LineUpdateInfoRequest request) {
-        lineCommandService.updateLine(LineAssembler.toLineUpdateInfoRequestDto(id, request));
+        lineCommandService.updateLine(id, request);
         return ResponseEntity.noContent().build();
     }
 }

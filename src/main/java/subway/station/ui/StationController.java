@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.StationCommandService;
 import subway.station.application.StationQueryService;
-import subway.station.application.dto.request.StationCreateRequestDto;
 import subway.station.application.dto.request.StationInfoResponseDto;
 import subway.station.ui.dto.reqest.StationCreateRequest;
 import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
-import subway.station.ui.dto.response.StationInfoResponse;
 import subway.station.ui.dto.response.StationInfosResponse;
 
 @RestController
@@ -36,22 +34,18 @@ public class StationController {
     @GetMapping
     public ResponseEntity<StationInfosResponse> findAll() {
         List<StationInfoResponseDto> result = stationQueryService.findAll();
-        StationInfosResponse stationInfosResponse = StationAssembler.toStationInfosResponse(result);
-        return ResponseEntity.ok(stationInfosResponse);
+        return ResponseEntity.ok(new StationInfosResponse(result));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationInfoResponse> findStationInfoById(@PathVariable Long id) {
-        StationInfoResponse stationInfoResponse = StationAssembler.toStationInfoResponse(
-                stationQueryService.findStationInfoById(id));
+    public ResponseEntity<StationInfoResponseDto> findStationInfoById(@PathVariable Long id) {
+        StationInfoResponseDto stationInfoResponse = stationQueryService.findStationInfoById(id);
         return ResponseEntity.ok(stationInfoResponse);
     }
 
     @PostMapping
-    public ResponseEntity<StationInfoResponse> create(@RequestBody @Valid StationCreateRequest request) {
-        StationCreateRequestDto requestDto = StationAssembler.toStationCreateRequestDto(request);
-        StationInfoResponseDto stationInfoResponseDto = stationCommandService.create(requestDto);
-        StationInfoResponse response = StationAssembler.toStationInfoResponse(stationInfoResponseDto);
+    public ResponseEntity<StationInfoResponseDto> create(@RequestBody @Valid StationCreateRequest request) {
+        StationInfoResponseDto response = stationCommandService.create(request);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
@@ -65,7 +59,7 @@ public class StationController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStationInfo(@PathVariable Long id,
             @RequestBody @Valid StationUpdateInfoRequest request) {
-        stationCommandService.updateStationInfo(StationAssembler.toUpdateStationInfoRequestDto(id, request));
+        stationCommandService.updateStationInfo(id, request);
         return ResponseEntity.noContent()
                 .build();
     }

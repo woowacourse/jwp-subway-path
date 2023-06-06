@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -74,9 +73,7 @@ class StationControllerTest extends AbstractControllerTest {
                 new StationInfoResponseDto(2L, "name2"));
         given(stationQueryService.findAll())
                 .willReturn(input);
-        List<StationInfoResponse> resultList = input.stream().map(StationAssembler::toStationInfoResponse)
-                .collect(Collectors.toList());
-        String result = objectMapper.writeValueAsString(new StationInfosResponse(resultList));
+        String result = objectMapper.writeValueAsString(new StationInfosResponse(input));
 
         // when
         mockMvc.perform(get("/stations"))

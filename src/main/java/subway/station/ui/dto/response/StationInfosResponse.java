@@ -1,19 +1,20 @@
 package subway.station.ui.dto.response;
 
 import java.util.List;
+import subway.station.application.dto.request.StationInfoResponseDto;
 
 public class StationInfosResponse {
 
-    private List<StationInfoResponse> stations;
+    private List<StationInfoResponseDto> stations;
 
     private StationInfosResponse() {
     }
 
-    public StationInfosResponse(List<StationInfoResponse> stations) {
+    public StationInfosResponse(List<StationInfoResponseDto> stations) {
         this.stations = stations;
     }
 
-    public List<StationInfoResponse> getStations() {
+    public List<StationInfoResponseDto> getStations() {
         return stations;
     }
 }

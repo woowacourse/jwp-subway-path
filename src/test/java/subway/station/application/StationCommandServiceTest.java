@@ -13,11 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import subway.station.application.dto.request.StationCreateRequestDto;
-import subway.station.application.dto.request.StationInfoUpdateRequestDto;
 import subway.station.db.FakeStationRepository;
 import subway.station.domain.Station;
 import subway.station.domain.StationDeletedEvent;
+import subway.station.ui.dto.reqest.StationCreateRequest;
+import subway.station.ui.dto.reqest.StationUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 삭제하는 서비스 테스트")
@@ -67,7 +67,7 @@ class StationCommandServiceTest {
         final String name = "강남역";
 
         // when
-        stationCommandService.create(new StationCreateRequestDto(name));
+        stationCommandService.create(new StationCreateRequest(name));
 
         // then
         assertThat(stationRepository.findByName(name)).isPresent();
@@ -82,7 +82,7 @@ class StationCommandServiceTest {
         station.updateName(newName);
 
         // when
-        stationCommandService.updateStationInfo(new StationInfoUpdateRequestDto(station.getId(), newName));
+        stationCommandService.updateStationInfo(station.getId(), new StationUpdateInfoRequest(newName));
 
         // then
         assertTrue(stationRepository.findByName(newName).isPresent());

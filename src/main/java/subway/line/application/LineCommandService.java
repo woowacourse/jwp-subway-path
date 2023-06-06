@@ -4,13 +4,13 @@ import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.line.application.dto.request.LineAddInterStationRequestDto;
-import subway.line.application.dto.request.LineCreateRequestDto;
-import subway.line.application.dto.request.LineUpdateRequestDto;
 import subway.line.application.dto.response.LineResponseDto;
 import subway.line.application.exception.LineNotFoundException;
 import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
+import subway.line.ui.dto.request.LineAddStationRequest;
+import subway.line.ui.dto.request.LineCreateRequest;
+import subway.line.ui.dto.request.LineUpdateInfoRequest;
 import subway.station.domain.StationDeletedEvent;
 
 @Service
@@ -23,7 +23,7 @@ public class LineCommandService {
         this.lineRepository = lineRepository;
     }
 
-    public LineResponseDto createLine(LineCreateRequestDto lineCreateRequestDto) {
+    public LineResponseDto createLine(LineCreateRequest lineCreateRequestDto) {
         Line line = new Line(lineCreateRequestDto.getName(), lineCreateRequestDto.getColor(),
                 lineCreateRequestDto.getUpStationId(), lineCreateRequestDto.getDownStationId(),
                 lineCreateRequestDto.getDistance());
@@ -35,10 +35,10 @@ public class LineCommandService {
         lineRepository.deleteById(id);
     }
 
-    public LineResponseDto addInterStation(LineAddInterStationRequestDto requestDto) {
-        Line line = lineRepository.findById(requestDto.getId()).orElseThrow(LineNotFoundException::new);
-        line.addInterStation(requestDto.getUpStationId(), requestDto.getDownStationId(), requestDto.getNewStationId(),
-                requestDto.getDistance());
+    public LineResponseDto addInterStation(long id, LineAddStationRequest request) {
+        Line line = lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
+        line.addInterStation(request.getUpStationId(), request.getDownStationId(), request.getNewStationId(),
+                request.getDistance());
         Line result = lineRepository.update(line);
         return LineResponseDto.from(result);
     }
@@ -59,11 +59,11 @@ public class LineCommandService {
         }
     }
 
-    public void updateLine(LineUpdateRequestDto lineUpdateRequestDto) {
-        Line line = lineRepository.findById(lineUpdateRequestDto.getId())
+    public void updateLine(long id, LineUpdateInfoRequest request) {
+        Line line = lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-        line.updateColor(lineUpdateRequestDto.getColor());
-        line.updateName(lineUpdateRequestDto.getName());
+        line.updateColor(request.getColor());
+        line.updateName(request.getName());
         lineRepository.update(line);
     }
 }

@@ -10,12 +10,12 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.interstation.domain.InterStation;
 import subway.interstation.domain.InterStations;
-import subway.line.application.dto.request.LineCreateRequestDto;
-import subway.line.application.dto.request.LineUpdateRequestDto;
 import subway.line.application.dto.response.InterStationResponseDto;
 import subway.line.application.dto.response.LineResponseDto;
 import subway.line.db.FakeLineRepository;
 import subway.line.domain.Line;
+import subway.line.ui.dto.request.LineCreateRequest;
+import subway.line.ui.dto.request.LineUpdateInfoRequest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class LineCommandServiceTest {
@@ -31,7 +31,7 @@ class LineCommandServiceTest {
 
     @Test
     void 정상적으로_생성된다() {
-        LineResponseDto result = lineCommandService.createLine(new LineCreateRequestDto("2호선", "초록색", 1L, 2L, 10));
+        LineResponseDto result = lineCommandService.createLine(new LineCreateRequest("2호선", "초록색", 1L, 2L, 10L));
         LineResponseDto expected = new LineResponseDto(1L, "2호선", "초록색", List.of(
                 new InterStationResponseDto(1L, 1L, 2L, 10)
         ));
@@ -70,7 +70,7 @@ class LineCommandServiceTest {
         )));
 
         //when
-        lineCommandService.updateLine(new LineUpdateRequestDto(savedLine.getId(), "3호선", "orange"));
+        lineCommandService.updateLine(savedLine.getId(), new LineUpdateInfoRequest("3호선", "orange"));
 
         //then
         Line result = fakeLineRepository.findById(savedLine.getId()).get();
