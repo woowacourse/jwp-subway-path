@@ -1,0 +1,656 @@
+DELETE http://localhost:8080/lines/1
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+GET http://localhost:8080/shortest-path/?start=첫번째역&end=세번째역&age=20
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T113228.200.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T113224.200.json
+
+###
+
+GET http://localhost:8080/lines/3
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T113220.400.json
+
+###
+
+GET http://localhost:8080/lines/1
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T113213.200.json
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+<> 2023-05-30T113205.400.json
+
+###
+
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T113126.400.json
+
+###
+
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "두번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "두번째역",
+  "direction": "하행",
+  "distance": 4
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "파랑",
+  "additionalFare": 100
+}
+
+<> 2023-05-30T113038.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+<> 2023-05-30T113035.201.json
+
+###
+
+DELETE http://localhost:8080/lines/1
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+GET http://localhost:8080/shortest-path/?start=첫번째역&end=세번째역&age=20
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112856-1.200.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112856.200.json
+
+###
+
+GET http://localhost:8080/lines/3
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112856.400.json
+
+###
+
+GET http://localhost:8080/lines/1
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112855.200.json
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+<> 2023-05-30T112855-3.400.json
+
+###
+
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112855-2.400.json
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+<> 2023-05-30T112855-1.400.json
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 106
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "두째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+<> 2023-05-30T112855.400.json
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "두번째역",
+  "direction": "하행",
+  "distance": 4
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "파랑",
+  "additionalFare": 100
+}
+
+<> 2023-05-30T112854-1.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+<> 2023-05-30T112854.201.json
+
+###
+
+DELETE http://localhost:8080/lines/1
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+GET http://localhost:8080/shortest-path/?start=첫번째역&end=세번째역&age=20
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112710.200.json
+
+###
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112709-1.200.json
+
+###
+
+GET http://localhost:8080/lines/3
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112709-2.400.json
+
+###
+
+GET http://localhost:8080/lines/1
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-30T112709.200.json
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+<> 2023-05-30T112709-1.400.json
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 10
+}
+
+###
+
+DELETE http://localhost:8080/lines/1/sections/?stationName=네번째역
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/lines/1/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 106
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "두째역",
+  "newStation": "세번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+<> 2023-05-30T112709.400.json
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "첫번째역",
+  "newStation": "두번째역",
+  "direction": "하행",
+  "distance": 4
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "2호선",
+  "color": "파랑",
+  "additionalFare": 100
+}
+
+<> 2023-05-30T112708-1.201.json
+
+###
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+Content-Length: 69
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": "1호선",
+  "color": "빨강",
+  "additionalFare": 200
+}
+
+<> 2023-05-30T112708.201.json
+
+###
+
+DELETE http://localhost:8080/lines/2
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+DELETE http://localhost:8080/lines/1
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 112
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "네번째역",
+  "newStation": "다섯번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+POST http://localhost:8080/lines/2/sections
+Content-Type: application/json
+Content-Length: 109
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "baseStation": "세번째역",
+  "newStation": "네번째역",
+  "direction": "하행",
+  "distance": 5
+}
+
+###
+
+GET http://localhost:8080/shortest-path/?start=첫번째역&end=세번째역&age=20
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-05-24T225157-2.200.json
+
+###
+
