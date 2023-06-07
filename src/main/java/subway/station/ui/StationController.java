@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.StationCommandService;
 import subway.station.application.StationQueryService;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
+import subway.station.dto.response.StationInfoResponse;
 import subway.station.dto.response.StationInfosResponse;
 
 @RestController

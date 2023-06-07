@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.station.application.exception.StationNotFoundException;
 import subway.station.domain.StationRepository;
-import subway.station.dto.request.StationInfoResponse;
+import subway.station.dto.response.StationInfoResponse;
 
 @Service
 @Transactional

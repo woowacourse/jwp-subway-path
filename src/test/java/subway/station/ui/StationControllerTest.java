@@ -20,8 +20,8 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.common.webmvc.AbstractControllerTest;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
+import subway.station.dto.response.StationInfoResponse;
 import subway.station.dto.response.StationInfosResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -35,7 +35,7 @@ class StationControllerTest extends AbstractControllerTest {
                 .willReturn(stationInfoResponse);
         String requestBody = objectMapper.writeValueAsString(new StationCreateRequest("강남역"));
         String expected = objectMapper.writeValueAsString(
-                new subway.station.dto.response.StationInfoResponse(1L, "강남역"));
+                new StationInfoResponse(1L, "강남역"));
 
         // then
         mockMvc.perform(post("/stations")
@@ -59,7 +59,7 @@ class StationControllerTest extends AbstractControllerTest {
         given(stationQueryService.findStationInfoById(1))
                 .willReturn(new StationInfoResponse(1, "name"));
         String expected = objectMapper.writeValueAsString(
-                new subway.station.dto.response.StationInfoResponse(1, "name"));
+                new StationInfoResponse(1, "name"));
 
         mockMvc.perform(get("/stations/1"))
 

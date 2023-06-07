@@ -1,7 +1,6 @@
 package subway.station.dto.response;
 
 import java.util.List;
-import subway.station.dto.request.StationInfoResponse;
 
 public class StationInfosResponse {
 

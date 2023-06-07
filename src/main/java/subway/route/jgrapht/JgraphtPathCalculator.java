@@ -15,12 +15,9 @@ public class JgraphtPathCalculator implements PathCalculator {
 
     @Override
     public PathResponse calculatePath(PathRequest requestDto) {
-        DijkstraShortestPath<Long, InterStationEdge> dijkstraShortestPath = drawDijkstraGraph(
-                requestDto);
+        DijkstraShortestPath<Long, InterStationEdge> dijkstraShortestPath = drawDijkstraGraph(requestDto);
         try {
-            double distance = dijkstraShortestPath.getPathWeight(requestDto.getSourceId(),
-                    requestDto.getTargetId());
-
+            double distance = dijkstraShortestPath.getPathWeight(requestDto.getSourceId(), requestDto.getTargetId());
             List<InterStationEdge> stations = dijkstraShortestPath.getPath(requestDto.getSourceId(),
                     requestDto.getTargetId()).getEdgeList();
             return new PathResponse((int) distance, stations);

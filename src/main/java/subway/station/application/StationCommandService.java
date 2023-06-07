@@ -7,8 +7,8 @@ import subway.station.domain.Station;
 import subway.station.domain.StationDeletedEvent;
 import subway.station.domain.StationRepository;
 import subway.station.dto.request.StationCreateRequest;
-import subway.station.dto.request.StationInfoResponse;
 import subway.station.dto.request.StationUpdateInfoRequest;
+import subway.station.dto.response.StationInfoResponse;
 
 @Service
 @Transactional
