@@ -7,6 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.line.db.interstation.InterStationDao;
 import subway.line.db.interstation.InterStationEntity;
@@ -16,9 +18,9 @@ class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert lineInsertAction;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final InterStationDao interStationDao;
     private final RowMapper<Optional<LineEntity>> optionalRowMapper;
-
     private final RowMapper<LineEntity> rowMapper;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -27,6 +29,7 @@ class LineDao {
                 .withTableName("line")
                 .usingColumns("name", "color")
                 .usingGeneratedKeyColumns("id");
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         interStationDao = new InterStationDao(jdbcTemplate);
         optionalRowMapper = getOptionalRowMapper();
         rowMapper = getRowMapper();
@@ -63,11 +66,10 @@ class LineDao {
         List<Long> toInterStationIds = toInterStationEntities.stream()
                 .map(InterStationEntity::getId)
                 .collect(Collectors.toList());
-        String inClause = toInterStationIds.stream()
-                .map(id -> "?")
-                .collect(Collectors.joining(","));
-        String sql = String.format("delete from InterStation where id in (%s)", inClause);
-        jdbcTemplate.update(sql, toInterStationIds.toArray());
+        String sql = "delete from INTERSTATION where id = (:ids)";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("ids", toInterStationIds);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public List<LineEntity> findAll() {
