@@ -1,4 +1,4 @@
-package subway.line.application.exception;
+package subway.line.domain.line.exception;
 
 import subway.common.exception.BusinessException;
 

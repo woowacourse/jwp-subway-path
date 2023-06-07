@@ -8,10 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.line.application.exception.LineNotFoundException;
 import subway.line.db.FakeLineRepository;
 import subway.line.domain.interstation.InterStation;
 import subway.line.domain.line.Line;
+import subway.line.domain.line.exception.LineNotFoundException;
 import subway.line.dto.response.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

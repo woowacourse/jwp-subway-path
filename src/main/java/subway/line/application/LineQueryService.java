@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.line.application.exception.LineNotFoundException;
 import subway.line.domain.line.Line;
 import subway.line.domain.line.LineRepository;
+import subway.line.domain.line.exception.LineNotFoundException;
 import subway.line.dto.response.LineResponse;
 
 @Service

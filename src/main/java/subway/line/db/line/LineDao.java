@@ -8,9 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.line.application.exception.LineNotFoundException;
 import subway.line.db.interstation.InterStationDao;
 import subway.line.db.interstation.InterStationEntity;
+import subway.line.domain.line.exception.LineNotFoundException;
 
 class LineDao {
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import subway.line.application.exception.LineNotFoundException;
+import subway.line.domain.line.exception.LineNotFoundException;
 import subway.route.domain.exception.PathNotFoundException;
 import subway.station.application.exception.StationNotFoundException;
 

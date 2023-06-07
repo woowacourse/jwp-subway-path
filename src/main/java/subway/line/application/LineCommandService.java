@@ -4,9 +4,9 @@ import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.line.application.exception.LineNotFoundException;
 import subway.line.domain.line.Line;
 import subway.line.domain.line.LineRepository;
+import subway.line.domain.line.exception.LineNotFoundException;
 import subway.line.dto.request.LineAddStationRequest;
 import subway.line.dto.request.LineCreateRequest;
 import subway.line.dto.request.LineUpdateInfoRequest;
@@ -48,14 +48,7 @@ public class LineCommandService {
         List<Line> lines = lineRepository.findAll();
         for (Line line : lines) {
             line.deleteStation(event.getId());
-            Line result = lineRepository.update(line);
-            removeIfNoStationInLine(result);
-        }
-    }
-
-    private void removeIfNoStationInLine(Line result) {
-        if (result.isEmpty()) {
-            lineRepository.deleteById(result.getId());
+            lineRepository.update(line);
         }
     }
 

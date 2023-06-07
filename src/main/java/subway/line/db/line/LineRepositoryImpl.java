@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import subway.line.application.exception.LineNotFoundException;
 import subway.line.db.interstation.InterStationEntity;
 import subway.line.domain.interstation.InterStation;
 import subway.line.domain.line.Line;
 import subway.line.domain.line.LineRepository;
 import subway.line.domain.line.exception.LineAlreadyRegisteredException;
+import subway.line.domain.line.exception.LineNotFoundException;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
