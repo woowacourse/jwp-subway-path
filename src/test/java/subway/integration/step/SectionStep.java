@@ -2,7 +2,7 @@ package subway.integration.step;
 
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
-import subway.dto.SectionCreateRequest;
+import subway.dto.request.SectionCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionStep {

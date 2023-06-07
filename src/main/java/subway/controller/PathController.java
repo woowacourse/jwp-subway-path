@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.PathRequest;
-import subway.dto.PathResponse;
+import subway.dto.request.PathRequest;
+import subway.dto.response.PathResponse;
 import subway.service.PathService;
 
 @RestController

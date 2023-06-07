@@ -8,9 +8,9 @@ import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
-import subway.dto.PathRequest;
-import subway.dto.PathResponse;
-import subway.dto.StationResponse;
+import subway.dto.request.PathRequest;
+import subway.dto.response.PathResponse;
+import subway.dto.response.StationResponse;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
