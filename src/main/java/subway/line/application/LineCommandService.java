@@ -35,12 +35,11 @@ public class LineCommandService {
         lineRepository.deleteById(id);
     }
 
-    public LineResponse addInterStation(long id, LineAddStationRequest request) {
+    public void addInterStation(long id, LineAddStationRequest request) {
         Line line = lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
         line.addInterStation(request.getUpStationId(), request.getDownStationId(), request.getNewStationId(),
                 request.getDistance());
-        Line result = lineRepository.update(line);
-        return LineResponse.from(result);
+        lineRepository.update(line);
     }
 
     @EventListener(StationDeletedEvent.class)

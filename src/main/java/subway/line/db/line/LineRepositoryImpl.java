@@ -1,5 +1,6 @@
 package subway.line.db.line;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,33 +48,39 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public Line update(Line line) {
-        if (!(line instanceof LineProxy)) {
-            throw new LineProxyNotInitializedException();
-        }
-        LineProxy lineProxy = (LineProxy) line;
-        updateInformation(line, lineProxy);
-        addInterStations(lineProxy);
-        removeInterStations(lineProxy);
-        return findById(line.getId())
+    public void update(Line line) {
+        Line existLine = findById(line.getId())
                 .orElseThrow(LineNotFoundException::new);
+        updateInformation(line, existLine);
+        addInterStations(line, existLine);
+        removeInterStations(line, existLine);
     }
 
-    private void addInterStations(LineProxy lineProxy) {
-        if (!lineProxy.getAddedInterStations().isEmpty()) {
-            lineDao.insertInterStations(toInterStationEntities(lineProxy.getAddedInterStations(), lineProxy.getId()));
+    private void updateInformation(Line line, Line existLine) {
+        if (!line.getName().equals(existLine.getName())) {
+            lineDao.updateInformation(LineEntity.from(line));
+            return;
         }
-    }
-
-    private void updateInformation(Line line, LineProxy lineProxy) {
-        if (lineProxy.isInfoNeedToUpdated()) {
+        if (!line.getColor().equals(existLine.getColor())) {
             lineDao.updateInformation(LineEntity.from(line));
         }
     }
 
-    private void removeInterStations(LineProxy lineProxy) {
-        if (!lineProxy.getRemovedInterStations().isEmpty()) {
-            lineDao.deleteInterStations(toInterStationEntities(lineProxy.getRemovedInterStations(), lineProxy.getId()));
+    private void addInterStations(Line line, Line existLine) {
+        List<InterStation> interStations = new ArrayList<>(line.getInterStations().getInterStations());
+        List<InterStation> existInterStations = new ArrayList<>(existLine.getInterStations().getInterStations());
+        interStations.removeAll(existInterStations);
+        if (!interStations.isEmpty()) {
+            lineDao.insertInterStations(toInterStationEntities(interStations, line.getId()));
+        }
+    }
+
+    private void removeInterStations(Line line, Line existLine) {
+        List<InterStation> interStations = new ArrayList<>(line.getInterStations().getInterStations());
+        List<InterStation> existInterStations = new ArrayList<>(existLine.getInterStations().getInterStations());
+        existInterStations.removeAll(interStations);
+        if (!existInterStations.isEmpty()) {
+            lineDao.deleteInterStations(toInterStationEntities(existInterStations, line.getId()));
         }
     }
 

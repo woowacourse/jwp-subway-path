@@ -40,10 +40,9 @@ public class FakeLineRepository implements LineRepository {
     }
 
     @Override
-    public Line update(Line line) {
+    public void update(Line line) {
         Long lineId = line.getId();
         lines.put(lineId, new Line(lineId, line));
-        return lines.get(lineId);
     }
 
     @Override
