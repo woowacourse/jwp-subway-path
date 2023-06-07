@@ -42,7 +42,7 @@ public class LineController {
 
     @PostMapping("/{id}")
     public ResponseEntity<LineResponse> addLineStation(@PathVariable Long id,
-            @RequestBody LineAddStationRequest request) {
+            @RequestBody @Valid LineAddStationRequest request) {
         lineCommandService.addInterStation(id, request);
         LineResponse responseDto = lineQueryService.findById(id);
         return ResponseEntity.ok(responseDto);
