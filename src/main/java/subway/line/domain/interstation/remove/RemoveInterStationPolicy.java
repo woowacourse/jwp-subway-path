@@ -16,11 +16,14 @@ public enum RemoveInterStationPolicy {
         this.removeInterStationStrategy = removeInterStationStrategy;
     }
 
-    public static RemoveInterStationStrategy of(List<InterStation> interStations, long removeStationId) {
+    public static RemoveInterStationPolicy of(List<InterStation> interStations, long removeStationId) {
         return Arrays.stream(values())
-                .map(it -> it.removeInterStationStrategy)
-                .filter(it -> it.isSatisfied(interStations, removeStationId))
+                .filter(it -> it.removeInterStationStrategy.isSatisfied(interStations, removeStationId))
                 .findAny()
                 .orElseThrow(() -> new InterStationsException("역을 제거할 수 없습니다"));
+    }
+
+    public void removeInterStation(List<InterStation> interStations, long removeStationId) {
+        removeInterStationStrategy.removeInterStation(interStations, removeStationId);
     }
 }

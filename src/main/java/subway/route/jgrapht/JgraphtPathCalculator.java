@@ -17,13 +17,18 @@ public class JgraphtPathCalculator implements PathCalculator {
     public PathResponse calculatePath(PathRequest requestDto) {
         DijkstraShortestPath<Long, InterStationEdge> dijkstraShortestPath = drawDijkstraGraph(requestDto);
         try {
-            double distance = dijkstraShortestPath.getPathWeight(requestDto.getSourceId(), requestDto.getTargetId());
-            List<InterStationEdge> stations = dijkstraShortestPath.getPath(requestDto.getSourceId(),
-                    requestDto.getTargetId()).getEdgeList();
-            return new PathResponse((int) distance, stations);
+            return calculatePath(requestDto, dijkstraShortestPath);
         } catch (Exception e) {
             throw new PathNotFoundException();
         }
+    }
+
+    private PathResponse calculatePath(PathRequest requestDto,
+            DijkstraShortestPath<Long, InterStationEdge> dijkstraShortestPath) {
+        double distance = dijkstraShortestPath.getPathWeight(requestDto.getSourceId(), requestDto.getTargetId());
+        List<InterStationEdge> stations = dijkstraShortestPath.getPath(requestDto.getSourceId(),
+                requestDto.getTargetId()).getEdgeList();
+        return new PathResponse((int) distance, stations);
     }
 
     private DijkstraShortestPath<Long, InterStationEdge> drawDijkstraGraph(
