@@ -16,15 +16,15 @@ import subway.line.db.line.LineRepositoryImpl;
 import subway.line.domain.line.Line;
 import subway.line.domain.line.LineRepository;
 import subway.route.domain.InterStationEdge;
-import subway.route.line.LineEdgesAdapter;
+import subway.route.line.EdgeFinderAdapter;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("경로 조회용 역할 어댑터 테스트")
 @JdbcTest
-class LineEdgesAdapterTest {
+class EdgeFinderAdapterTest {
 
     private LineRepository lineRepository;
-    private LineEdgesAdapter lineEdgesAdapter;
+    private EdgeFinderAdapter edgeFinderAdapter;
     private long line2호선_id;
     private long line3호선_id;
 
@@ -32,7 +32,7 @@ class LineEdgesAdapterTest {
     private void setUp(JdbcTemplate jdbcTemplate) {
         lineRepository = new LineRepositoryImpl(jdbcTemplate);
         LineQueryService lineFindAllService = new LineQueryService(lineRepository);
-        lineEdgesAdapter = new LineEdgesAdapter(lineFindAllService);
+        edgeFinderAdapter = new EdgeFinderAdapter(lineFindAllService);
     }
 
     @BeforeEach
@@ -44,7 +44,7 @@ class LineEdgesAdapterTest {
     @Test
     void 정상적으로_모든_역을_그래프_형태로_반환한다() {
         // when
-        List<InterStationEdge> allEdges = lineEdgesAdapter.findAllEdges();
+        List<InterStationEdge> allEdges = edgeFinderAdapter.findAllEdges();
         // then
 
         assertThat(allEdges).usingRecursiveComparison()

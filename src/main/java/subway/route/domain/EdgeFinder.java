@@ -2,7 +2,7 @@ package subway.route.domain;
 
 import java.util.List;
 
-public interface RouteAllEdgesUseCase {
+public interface EdgeFinder {
 
     List<InterStationEdge> findAllEdges();
 }

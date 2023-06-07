@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 import subway.line.application.LineQueryService;
 import subway.line.dto.response.InterStationResponse;
 import subway.line.dto.response.LineResponse;
+import subway.route.domain.EdgeFinder;
 import subway.route.domain.InterStationEdge;
-import subway.route.domain.RouteAllEdgesUseCase;
 
 @Component
-public class LineEdgesAdapter implements RouteAllEdgesUseCase {
+public class EdgeFinderAdapter implements EdgeFinder {
 
     private final LineQueryService lineQueryService;
 
-    public LineEdgesAdapter(LineQueryService lineQueryService) {
+    public EdgeFinderAdapter(LineQueryService lineQueryService) {
         this.lineQueryService = lineQueryService;
     }
 
