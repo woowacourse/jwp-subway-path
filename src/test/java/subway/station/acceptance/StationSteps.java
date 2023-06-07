@@ -40,7 +40,7 @@ public class StationSteps {
     }
 
     public static void 역_이름_비교(ExtractableResponse<Response> 역_생성_요청_결과, String 역_이름) {
-        assertThat(역_생성_요청_결과.as(StationInfoResponse.class).getName()).isEqualTo(역_이름);
+        assertThat(역_생성_요청_결과.as(StationInfoResponse.class).getTitle()).isEqualTo(역_이름);
     }
 
     public static ExtractableResponse<Response> 역_정보_변경_요청(Long 역_ID, String 역_이름) {
