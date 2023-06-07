@@ -27,7 +27,7 @@ public class LineRepositoryImpl implements LineRepository {
     public Line save(Line line) {
         try {
             LineEntity lineEntity = lineDao.insert(LineEntity.from(line));
-            return toLineProxy(lineEntity);
+            return lineEntity.toLine();
         } catch (DuplicateKeyException e) {
             throw new LineAlreadyRegisteredException();
         }
@@ -37,14 +37,14 @@ public class LineRepositoryImpl implements LineRepository {
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(this::toLineProxy)
+                .map(LineEntity::toLine)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Line> findById(long id) {
         return lineDao.findById(id)
-                .map(this::toLineProxy);
+                .map(LineEntity::toLine);
     }
 
     @Override
@@ -88,17 +88,6 @@ public class LineRepositoryImpl implements LineRepository {
             long id) {
         return interStations.stream()
                 .map(interStation -> InterStationEntity.of(interStation, id))
-                .collect(Collectors.toList());
-    }
-
-    private LineProxy toLineProxy(LineEntity lineEntity) {
-        return new LineProxy(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-                toInterStations(lineEntity.getInterStationEntities()));
-    }
-
-    private List<InterStation> toInterStations(List<InterStationEntity> interStationEntities) {
-        return interStationEntities.stream()
-                .map(InterStationEntity::toInterStation)
                 .collect(Collectors.toList());
     }
 

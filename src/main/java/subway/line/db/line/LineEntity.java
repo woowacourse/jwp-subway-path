@@ -34,6 +34,12 @@ public class LineEntity {
         return new LineEntity(line.getName().getValue(), line.getColor().getValue(), interStationEntities);
     }
 
+    public Line toLine() {
+        return new Line(id, name, color, interStationEntities.stream()
+                .map(InterStationEntity::toInterStation)
+                .collect(Collectors.toUnmodifiableList()));
+    }
+
     public Long getId() {
         return id;
     }
