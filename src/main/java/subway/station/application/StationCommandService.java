@@ -25,7 +25,7 @@ public class StationCommandService {
 
     public StationInfoResponse create(StationCreateRequest requestDto) {
         Station station = stationRepository.save(new Station(requestDto.getName()));
-        return StationDtoAssembler.toStationInfoResponseDto(station);
+        return StationInfoResponse.from(station);
     }
 
     public void deleteById(long id) {

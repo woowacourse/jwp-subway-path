@@ -21,13 +21,13 @@ public class StationQueryService {
     public List<StationInfoResponse> findAll() {
         return stationRepository.findAll()
                 .stream()
-                .map(StationDtoAssembler::toStationInfoResponseDto)
+                .map(StationInfoResponse::from)
                 .collect(Collectors.toList());
     }
 
     public StationInfoResponse findStationInfoById(long id) {
         return stationRepository.findById(id)
-                .map(StationDtoAssembler::toStationInfoResponseDto)
+                .map(StationInfoResponse::from)
                 .orElseThrow(StationNotFoundException::new);
     }
 }
