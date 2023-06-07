@@ -2,11 +2,9 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
+import subway.dao.*;
+import subway.dto.StationCreateReqeust;
 import subway.dto.StationDeleteRequest;
-import subway.dao.DbEdgeDao;
-import subway.dao.DbLineDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
@@ -14,80 +12,115 @@ import subway.dto.StationAddRequest;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.StationEntity;
-import subway.exception.LineException;
-import subway.exception.StationException;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationAlreadyExistException;
+import subway.exception.StationNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StationService {
     private final SubwayGraphs subwayGraphs;
-    private final DbLineDao dbLineDao;
+    private final LineDao lineDao;
     private final StationDao stationDao;
-    private final DbEdgeDao dbEdgeDao;
+    private final EdgeDao edgeDao;
 
-    public StationService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao dbEdgeDao) {
+    public StationService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final StationDao stationDao, final EdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
-        this.dbLineDao = dbLineDao;
+        this.lineDao = lineDao;
         this.stationDao = stationDao;
-        this.dbEdgeDao = dbEdgeDao;
+        this.edgeDao = edgeDao;
     }
 
     @Transactional
-    public StationResponse addStation(final StationAddRequest stationAddRequest) {
-        final Line line = dbLineDao.findByName(stationAddRequest.getLineName())
-                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."))
+    public void addStation(final StationAddRequest stationAddRequest) {
+        final Line line = lineDao.findByName(stationAddRequest.getLineName())
+                .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
-        Station upLineStation = subwayGraphs.findStationByName(line, stationAddRequest.getUpLineStationName())
-                .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getUpLineStationName()))
-                                .toDomain());
+        Station upLineStation = stationDao.findByName(stationAddRequest.getUpLineStationName())
+                .orElseThrow(() -> new StationNotFoundException())
+                .toDomain();
 
-        Station downLineStation = subwayGraphs.findStationByName(line, stationAddRequest.getDownLineStationName())
-                .orElseGet(
-                        () -> stationDao.saveStation(new StationEntity(stationAddRequest.getDownLineStationName()))
-                                .toDomain());
+        Station downLineStation = stationDao.findByName(stationAddRequest.getDownLineStationName())
+                .orElseThrow(() -> new StationNotFoundException())
+                .toDomain();
 
         final int distance = stationAddRequest.getDistance();
 
-        Station addedStation = subwayGraphs.createStation(line, upLineStation, downLineStation, distance);
+        subwayGraphs.addStation(line, upLineStation, downLineStation, distance);
 
-        final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+        final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
 
-        dbEdgeDao.deleteAllEdgesOf(line.getId());
+        edgeDao.deleteAllEdgesOf(line.getId());
 
         for (Station station : allStationsInOrder) {
             EdgeEntity edgeEntity = subwayGraphs.findEdge(line, station);
-            dbEdgeDao.save(edgeEntity);
+            edgeDao.save(edgeEntity);
         }
-
-        return StationResponse.of(addedStation);
     }
 
     @Transactional
-    public StationResponse deleteStation(StationDeleteRequest stationDeleteRequest) {
-        Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).
-                orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."))
+    public List<StationResponse> deleteStation(StationDeleteRequest stationDeleteRequest) {
+        Line line = lineDao.findByName(stationDeleteRequest.getLineName()).
+                orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
         Station targetStation = stationDao.findByName(stationDeleteRequest.getStationName()).
-                orElseThrow(()-> new StationException("해당 역이 존재 하지 않습니다."))
+                orElseThrow(() -> new StationNotFoundException())
                 .toDomain();
 
-        subwayGraphs.deleteStation(line, targetStation);
+        if (subwayGraphs.findAllStationsInOrder(line).size() == 2) {
+            return deleteLine(line);
+        }
+        return deleteStation(line, targetStation);
+    }
 
-        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+    private List<StationResponse> deleteLine(Line line) {
+        List<Station> removedStations = subwayGraphs.remove(line);
 
-        dbEdgeDao.deleteAllEdgesOf(line.getId());
+        edgeDao.deleteAllEdgesOf(line.getId());
 
-        for (Station station : allStationsInOrder) {
-            EdgeEntity edgeEntity = subwayGraphs.findEdge(line, station);
-            dbEdgeDao.save(edgeEntity);
+        List<StationResponse> stationResponses = new ArrayList<>();
+
+        for (Station removedStation : removedStations) {
+            stationResponses.add(StationResponse.of(removedStation));
+            if (!subwayGraphs.isStationExistInAnyLine(removedStation)) {
+                stationDao.delete(removedStation.getId());
+            }
+        }
+        lineDao.deleteLine(line.getId());
+
+        return stationResponses;
+    }
+
+    private List<StationResponse> deleteStation(Line line, Station station) {
+        subwayGraphs.deleteStation(line, station);
+
+        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrder(line);
+
+        edgeDao.deleteAllEdgesOf(line.getId());
+
+        for (Station remainStation : allStationsInOrder) {
+            EdgeEntity edgeEntity = subwayGraphs.findEdge(line, remainStation);
+            edgeDao.save(edgeEntity);
         }
 
-        stationDao.delete(targetStation.getId());
+        if (!subwayGraphs.isStationExistInAnyLine(station)) {
+            stationDao.delete(station.getId());
+        }
 
-        return StationResponse.of(targetStation);
+        return List.of(StationResponse.of(station));
+    }
+
+    public StationResponse createStation(StationCreateReqeust stationCreateReqeust) {
+        if (stationDao.findByName(stationCreateReqeust.getName()).isPresent()) {
+            throw new StationAlreadyExistException();
+        }
+        Station station = new Station(stationCreateReqeust.getName());
+        StationEntity stationEntity = stationDao.saveStation(station.toEntity());
+        return new StationResponse(stationEntity.getId(), stationEntity.getName());
     }
 }

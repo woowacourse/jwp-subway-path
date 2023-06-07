@@ -1,34 +1,32 @@
 package subway.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.dto.LineDto;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static subway.fixture.LineFixture.LINE_999;
-import static subway.fixture.StationFixture.*;
+import java.util.List;
 
 class SubwayGraphsTest {
 
     @Test
-    @DisplayName("새로운 노선을 추가할 수 있다.")
-    void createLineTest() {
-        SubwayGraphs subwayGraphs = new SubwayGraphs();
-        LineDto lineDto = subwayGraphs.createLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+    @DisplayName("최단 경로를 구할 수 있다.")
+    void ss() {
+        SubwayGraph subwayGraph1 = new SubwayGraph(new Line("2호선"));
+        subwayGraph1.addStation(new Station("A역"), new Station("D역"), 3);
+        subwayGraph1.addStation(new Station("D역"), new Station("B역"), 4);
+        subwayGraph1.addStation(new Station("B역"), new Station("C역"), 3);
+        SubwayGraph subwayGraph2 = new SubwayGraph(new Line("3호선"));
+        subwayGraph2.addStation(new Station("E역"), new Station("D역"), 2);
+        subwayGraph2.addStation(new Station("D역"), new Station("F역"), 2);
+        subwayGraph2.addStation(new Station("F역"), new Station("H역"), 2);
+        subwayGraph2.addStation(new Station("H역"), new Station("C역"), 2);
+        SubwayGraphs subwayGraphs = new SubwayGraphs(List.of(subwayGraph1, subwayGraph2));
 
-        assertThat(lineDto.getLine()).isEqualTo(LINE_999);
-        assertThat(lineDto.getAllStationsInOrder()).containsExactly(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
+        ShortestPath shortestPath = subwayGraphs.getShortestPath(new Station("B역"), new Station("H역"));
+
+        Assertions.assertThat(shortestPath.getPath()).containsExactly
+                (new Station("B역"), new Station("C역"), new Station("H역"));
+        Assertions.assertThat(shortestPath.getDistance()).isEqualTo(5);
     }
 
-    @Test
-    @DisplayName("기존 노선에 새로운 역을 추가할 수 있다.")
-    void addStationTest() {
-        final SubwayGraphs subwayGraphs = new SubwayGraphs();
-        subwayGraphs.createLine(LINE_999, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
-
-        final LineDto lineDto = subwayGraphs.addStation(LINE_999, EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
-
-        assertThat(lineDto.getLine()).isEqualTo(LINE_999);
-        assertThat(lineDto.getAllStationsInOrder()).containsExactly(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, SAPYEONG_STATION);
-    }
 }

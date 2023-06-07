@@ -1,7 +1,13 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationDeleteRequest {
+
+    @NotBlank
     private final String lineName;
+
+    @NotBlank
     private final String stationName;
 
     public StationDeleteRequest(String lineName, String stationName) {

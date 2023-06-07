@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class DbEdgeDao {
+public class DbEdgeDao implements EdgeDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -33,6 +33,7 @@ public class DbEdgeDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @Override
     public Long save(EdgeEntity edgeEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", edgeEntity.getLineId());
@@ -43,6 +44,7 @@ public class DbEdgeDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    @Override
     public void deleteAllEdgesOf(Long lineId) {
         String sql = "delete from edge where line_id = ?";
         jdbcTemplate.update(sql, lineId);

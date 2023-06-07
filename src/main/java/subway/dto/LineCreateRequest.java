@@ -1,18 +1,17 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class LineCreateRequest {
-    private final String lineName;
-    private final String upLineStationName;
-    private final String downLineStationName;
-    private final Integer distance;
+    @NotBlank
+    private String lineName;
 
-    public LineCreateRequest(String lineName, String upLineStationName, String downLineStationName, Integer distance) {
+    public LineCreateRequest(String lineName) {
         this.lineName = lineName;
-        this.upLineStationName = upLineStationName;
-        this.downLineStationName = downLineStationName;
-        this.distance = distance;
+    }
+
+    private LineCreateRequest() {
     }
 
     @Override
@@ -20,28 +19,15 @@ public class LineCreateRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LineCreateRequest that = (LineCreateRequest) o;
-        return Objects.equals(lineName, that.lineName) && Objects.equals(upLineStationName, that.upLineStationName) && Objects.equals(downLineStationName, that.downLineStationName) && Objects.equals(distance, that.distance);
+        return Objects.equals(lineName, that.lineName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineName, upLineStationName, downLineStationName, distance);
+        return Objects.hash(lineName);
     }
 
     public String getLineName() {
         return lineName;
     }
-
-    public String getUpLineStationName() {
-        return upLineStationName;
-    }
-
-    public String getDownLineStationName() {
-        return downLineStationName;
-    }
-
-    public Integer getDistance() {
-        return distance;
-    }
-
 }

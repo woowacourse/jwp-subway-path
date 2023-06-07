@@ -5,10 +5,16 @@ import subway.entity.LineEntity;
 import java.util.Objects;
 
 public class Line {
+    private static final int MIN_NAME_LENGTH = 1;
+    private static final int MAX_NAME_LENGTH = 10;
+
     private final Long id;
     private final String name;
 
     public Line(final Long id, final String name) {
+        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException("노선 이름은 1자 이상 10자 이하입니다.");
+        }
         this.id = id;
         this.name = name;
     }

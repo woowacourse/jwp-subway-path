@@ -1,78 +1,100 @@
 package subway.domain;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
-import subway.dto.LineDto;
 import subway.entity.EdgeEntity;
-import subway.exception.LineException;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
 public class SubwayGraphs {
     private final List<SubwayGraph> subwayGraphs;
+    private final WeightedMultigraph subwayMap;
 
-    public SubwayGraphs() {
-        this.subwayGraphs = new ArrayList<>();
+
+    public SubwayGraphs(List<SubwayGraph> subwayGraphs) {
+        this.subwayGraphs = new ArrayList<>(subwayGraphs);
+        this.subwayMap = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
+    public SubwayGraphs() {
+        this(Collections.emptyList());
+    }
 
-    // TODO: 반환 타입 어떤걸로
-    public LineDto createLine(Line line, Station upLineStation, Station downLineStation, int distance) {
-        final SubwayGraph newLineGraph = new SubwayGraph(line);
-        newLineGraph.createNewLine(upLineStation, downLineStation, distance);
-        final List<Station> allStationsInOrder = newLineGraph.findAllStationsInOrder();
-        subwayGraphs.add(newLineGraph);
-        return new LineDto(line, allStationsInOrder);
+    public void addLine(Line line) {
+        SubwayGraph subwayGraph = new SubwayGraph(line);
+        subwayGraphs.add(subwayGraph);
     }
 
     public EdgeEntity findEdge(Line line, Station station) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        return subwayGraph.findEdge(station);
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
+        return subwayGraph.findEdgeEntity(station);
     }
 
-    public List<Station> findAllStationsInOrderOf(Line line) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+    public List<Station> findAllStationsInOrder(Line line) {
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.findAllStationsInOrder();
     }
 
-    public LineDto addStation(Line line, Station upLineStation, Station downLineStation, int distance) {
-        final SubwayGraph lineGraph = findSubwayGraphOf(line);
-
-        lineGraph.addStation(upLineStation, downLineStation, distance);
-        final List<Station> allStationsInOrder = lineGraph.findAllStationsInOrder();
-        return new LineDto(line, allStationsInOrder);
-    }
-
-    private SubwayGraph findSubwayGraphOf(final Line line) {
-        final SubwayGraph lineGraph = subwayGraphs.stream()
-                .filter(s -> s.isSameLine(line))
-                .findFirst()
-                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."));
-        return lineGraph;
-    }
-
-    public Station createStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-
+    public List<Station> addStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
+        final SubwayGraph subwayGraph = findSubwayGraph(line);
         return subwayGraph.addStation(upLineStation, downLineStation, distance);
     }
 
-    public Optional<Station> findStationByName(Line line, String name) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-
-        return subwayGraph.findStationByName(name);
+    public SubwayGraph findSubwayGraph(final Line line) {
+        final SubwayGraph lineGraph = subwayGraphs.stream()
+                .filter(s -> s.isSameLine(line))
+                .findFirst()
+                .orElseThrow(() -> new LineNotFoundException());
+        return lineGraph;
     }
 
-    public void remove(Line line) {
-        SubwayGraph subwayGraph = findSubwayGraphOf(line);
+    public boolean isStationExistInAnyLine(Station station) {
+        return subwayGraphs.stream()
+                .anyMatch(subwayGraph -> subwayGraph.isStationExist(station));
+    }
+
+    public List<Station> remove(Line line) {
+        SubwayGraph subwayGraph = findSubwayGraph(line);
+        List<Station> removedStations = subwayGraph.clear();
         subwayGraphs.remove(subwayGraph);
+        return removedStations;
     }
 
     public void deleteStation(Line line, Station station) {
-        SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        subwayGraph.remove(station);
+        SubwayGraph subwayGraph = findSubwayGraph(line);
+        subwayGraph.delete(station);
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> getSubwayMap() {
+        Graphs.removeVertexAndPreserveConnectivity(subwayMap, subwayMap.vertexSet().iterator());
+        for (SubwayGraph subwayGraph : this.subwayGraphs) {
+            Graphs.addGraph(subwayMap, subwayGraph.getMultiGraph());
+        }
+        return subwayMap;
+    }
+
+    public ShortestPath getShortestPath(Station source, Station destination) {
+        validateStationExist(source);
+        validateStationExist(destination);
+
+        DijkstraShortestPath calculator = new DijkstraShortestPath(getSubwayMap());
+        GraphPath<Station, DefaultWeightedEdge> path = calculator.getPath(source, destination);
+        return new ShortestPath(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateStationExist(Station source) {
+        if (!isStationExistInAnyLine(source)) {
+            throw new StationNotFoundException();
+        }
     }
 }
