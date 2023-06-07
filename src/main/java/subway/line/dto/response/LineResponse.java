@@ -6,12 +6,14 @@ import subway.line.domain.line.Line;
 public class LineResponse {
 
     private final Long id;
+    private final String name;
     private final String title;
     private final String color;
     private final List<InterStationResponse> interStations;
 
     public LineResponse(Long id, String title, String color, List<InterStationResponse> interStations) {
         this.id = id;
+        name = "lines/" + id;
         this.title = title;
         this.color = color;
         this.interStations = interStations;
@@ -25,6 +27,10 @@ public class LineResponse {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getTitle() {
