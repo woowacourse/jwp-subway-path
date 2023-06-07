@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.subway.Station;
 import subway.dto.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

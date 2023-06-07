@@ -1,10 +1,11 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.*;
+import subway.domain.subway.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -13,7 +14,9 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -24,6 +27,7 @@ public class LineService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public Long saveLine(LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
         final Long lineId = lineDao.insert(line);
@@ -43,9 +47,7 @@ public class LineService {
     }
 
     private List<Section> getSections(Long lineId) {
-        return sectionDao.findAllByLineId(lineId).stream()
-                .map(Section::of)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByLineId(lineId);
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -61,6 +63,7 @@ public class LineService {
                 .orElseThrow(() -> new NoSuchElementException("해당하는 노선을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }

@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
+import subway.domain.subway.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class SectionService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -30,6 +30,7 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
+    @Transactional
     public Long insertSection(SectionRequest request) {
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
@@ -45,9 +46,7 @@ public class SectionService {
     }
 
     private List<Section> getSections(Long lineId) {
-        return sectionDao.findAllByLineId(lineId).stream()
-                .map(Section::of)
-                .collect(Collectors.toList());
+        return sectionDao.findAllByLineId(lineId);
     }
 
     private void validateInput(Sections sections, SectionRequest request) {
@@ -110,6 +109,7 @@ public class SectionService {
         return sectionDao.insert(insertSection);
     }
 
+    @Transactional
     public void deleteStation(SectionDeleteRequest request) {
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);

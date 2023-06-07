@@ -10,9 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.subway.Station;
 import subway.dto.LineRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

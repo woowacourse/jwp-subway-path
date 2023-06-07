@@ -2,6 +2,10 @@ package subway.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import subway.domain.subway.Distance;
+import subway.domain.subway.Section;
+import subway.domain.subway.Sections;
+import subway.domain.subway.Station;
 
 import java.util.List;
 

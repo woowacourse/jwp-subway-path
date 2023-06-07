@@ -1,17 +1,29 @@
-package subway.domain;
+package subway.domain.subway;
 
 import java.util.Objects;
 
 public class Distance {
 
-    private final int distance;
+    private int distance;
 
     public Distance(final int distance) {
         this.distance = distance;
     }
 
+    public Distance plusDistance(final int distance) {
+        return new Distance(this.distance += distance);
+    }
+
+    public Distance minusDistance(final int distance) {
+        return new Distance(this.distance -= distance);
+    }
+
     public int getDistance() {
         return distance;
+    }
+
+    public boolean isShorterSame(final int distance) {
+        return this.distance < distance;
     }
 
     @Override
