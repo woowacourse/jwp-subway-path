@@ -47,7 +47,6 @@ class AddMiddleInterStationStrategyTest {
             assertThat(result).isTrue();
         }
 
-
         @Test
         void 상행선이_없는_경우() {
             // given

@@ -1,6 +1,5 @@
 package subway.station.domain;
 
-
 import java.util.Objects;
 import org.springframework.util.StringUtils;
 import subway.station.domain.exception.StationNameException;

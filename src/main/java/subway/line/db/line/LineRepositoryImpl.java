@@ -59,7 +59,6 @@ public class LineRepositoryImpl implements LineRepository {
                 .orElseThrow(LineNotFoundException::new);
     }
 
-
     private void addInterStations(LineProxy lineProxy) {
         if (!lineProxy.getAddedInterStations().isEmpty()) {
             lineDao.insertInterStations(toInterStationEntities(lineProxy.getAddedInterStations(), lineProxy.getId()));

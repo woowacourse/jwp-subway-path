@@ -12,7 +12,6 @@ public class Distance {
         this.value = value;
     }
 
-
     private void validate(long value) {
         if (value <= 0) {
             throw new DistanceException("거리는 양수이어야 합니다.");

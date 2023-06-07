@@ -33,7 +33,6 @@ public class InterStation {
         this(null, upStationId, downStationId, distance);
     }
 
-
     private void validateStations(Long upStationId, Long downStationId) {
         if (upStationId.equals(downStationId)) {
             throw new InterStationException("상행역과 하행역이 같습니다.");

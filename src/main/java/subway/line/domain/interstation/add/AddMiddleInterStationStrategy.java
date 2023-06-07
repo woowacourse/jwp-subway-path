@@ -28,7 +28,6 @@ public class AddMiddleInterStationStrategy implements AddInterStationStrategy {
         return interStations.stream().noneMatch(it -> it.contains(newStationId));
     }
 
-
     @Override
     public void addInterStation(List<InterStation> interStations, Long upStationId,
             Long downStationId,
