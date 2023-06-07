@@ -16,14 +16,25 @@ public enum AddInterStationPolicy {
         this.addInterStationStrategy = addInterStationStrategy;
     }
 
-    public static AddInterStationStrategy of(List<InterStation> interStations,
+    public static AddInterStationPolicy of(List<InterStation> interStations,
             Long upStationId,
             Long downStationId,
             Long newStationId) {
         return Arrays.stream(values())
-                .map(it -> it.addInterStationStrategy)
-                .filter(it -> it.isSatisfied(interStations, upStationId, downStationId, newStationId))
+                .filter(it -> it.addInterStationStrategy.isSatisfied(
+                        interStations,
+                        upStationId,
+                        downStationId,
+                        newStationId))
                 .findAny()
                 .orElseThrow(() -> new InterStationsException("역을 추가할 수 없습니다"));
+    }
+
+    public void addInterStation(List<InterStation> interStations,
+            Long upStationId,
+            Long downStationId,
+            long newStationId,
+            long distance) {
+        addInterStationStrategy.addInterStation(interStations, upStationId, downStationId, newStationId, distance);
     }
 }

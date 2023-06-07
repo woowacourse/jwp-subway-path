@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import subway.line.domain.interstation.add.AddInterStationPolicy;
-import subway.line.domain.interstation.add.AddInterStationStrategy;
 import subway.line.domain.interstation.exception.InterStationsException;
 import subway.line.domain.interstation.remove.RemoveInterStationPolicy;
 import subway.line.domain.interstation.remove.RemoveInterStationStrategy;
@@ -73,9 +72,11 @@ public class InterStations {
     }
 
     public void add(Long upStationId, Long downStationId, Long newStationId, long distance) {
-        AddInterStationStrategy strategy = AddInterStationPolicy.of(interStations, upStationId, downStationId,
+        AddInterStationPolicy policy = AddInterStationPolicy.of(interStations,
+                upStationId,
+                downStationId,
                 newStationId);
-        strategy.addInterStation(interStations, upStationId, downStationId, newStationId, distance);
+        policy.addInterStation(interStations, upStationId, downStationId, newStationId, distance);
     }
 
     public void remove(long stationId) {
