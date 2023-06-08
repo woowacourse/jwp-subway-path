@@ -10,7 +10,7 @@ import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.dto.request.PathRequest;
 import subway.dto.response.PathResponse;
-import subway.dto.response.StationResponse;
+import subway.dto.response.PathStationResponse;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
@@ -36,8 +36,8 @@ public class PathService {
         int shortestPathDistance = path.getDistance(sourceStation, targetStation);
         int shortestPathFare = fare.calculateFare(shortestPathDistance);
 
-        List<StationResponse> stationResponses = shortestPath.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+        List<PathStationResponse> stationResponses = shortestPath.stream()
+                .map(station -> new PathStationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
         return new PathResponse(stationResponses, shortestPathDistance, shortestPathFare);

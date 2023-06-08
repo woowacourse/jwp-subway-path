@@ -1,10 +1,10 @@
 package subway.dto.response;
 
-public class StationResponse {
+public class PathStationResponse {
     private final Long id;
     private final String name;
 
-    public StationResponse(Long id, String name) {
+    public PathStationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }

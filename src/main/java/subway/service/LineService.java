@@ -9,7 +9,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
-import subway.dto.response.StationResponse;
+import subway.dto.response.LineStationResponse;
 import subway.repository.LineRepository;
 
 @Service
@@ -37,13 +37,13 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         Line line = lineRepository.findById(id);
-        List<StationResponse> stationsResponse = getStationResponse(line);
+        List<LineStationResponse> stationsResponse = getStationResponse(line);
         return new LineResponse(id, line.getName(), stationsResponse);
     }
 
-    private List<StationResponse> getStationResponse(Line line) {
+    private List<LineStationResponse> getStationResponse(Line line) {
         return line.getStations().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(station -> new LineStationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
 }

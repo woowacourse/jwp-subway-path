@@ -98,7 +98,7 @@
 - [ ] 예외 처리
   - [ ] GlobalControllerAdvice Logger 사용
   - [ ] 예외 처리 시 메시지 자세한 정보 나타내도록 변경
-  - [ ] StationResponse
+  - [x] Response 분리
 - [x] 코드 스타일
   - [x] 메서드 순서 정렬
 

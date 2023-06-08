@@ -5,9 +5,9 @@ import java.util.List;
 public class LineResponse {
     private final Long id;
     private final String name;
-    private final List<StationResponse> stations;
+    private final List<LineStationResponse> stations;
 
-    public LineResponse(Long id, String name, List<StationResponse> stations) {
+    public LineResponse(Long id, String name, List<LineStationResponse> stations) {
         this.id = id;
         this.name = name;
         this.stations = stations;
@@ -21,7 +21,7 @@ public class LineResponse {
         return name;
     }
 
-    public List<StationResponse> getStations() {
+    public List<LineStationResponse> getStations() {
         return stations;
     }
 }

@@ -3,17 +3,17 @@ package subway.dto.response;
 import java.util.List;
 
 public class PathResponse {
-    private final List<StationResponse> stations;
+    private final List<PathStationResponse> stations;
     private final int distance;
     private final int fare;
 
-    public PathResponse(List<StationResponse> stations, int distance, int fare) {
+    public PathResponse(List<PathStationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
     }
 
-    public List<StationResponse> getStations() {
+    public List<PathStationResponse> getStations() {
         return stations;
     }
 
