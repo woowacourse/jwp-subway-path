@@ -9,10 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.InvalidException;
 import subway.exception.NoSuchPath;
+import subway.repository.ShortestPathFinder;
 
 @SuppressWarnings("NonAsciiCharacters")
 class ShortestPathTest {
-    private Path path;
+    private PathFinder pathFinder;
     private Station 잠실새내역;
     private Station 잠실역;
     private Station 잠실나루역;
@@ -30,17 +31,17 @@ class ShortestPathTest {
 
         List<Section> sections = List.of(section1, section2, section3);
 
-        path = ShortestPath.of(sections);
+        pathFinder = ShortestPathFinder.of(sections);
     }
 
     @DisplayName("최단 경로에 구하고 포함된 역들을 반환한다.")
     @Test
     void findPath() {
         // when
-        List<Station> shortestPath = path.findPath(잠실새내역, 잠실역);
+        Path shortestPath = pathFinder.findPath(잠실새내역, 잠실역);
 
         // then
-        assertThat(shortestPath).isEqualTo(List.of(잠실새내역, 잠실나루역, 잠실역));
+        assertThat(shortestPath.getPath()).isEqualTo(List.of(잠실새내역, 잠실나루역, 잠실역));
     }
 
     @DisplayName("경로를 구할 수 없는 경우 예외가 발생한다.")
@@ -51,19 +52,19 @@ class ShortestPathTest {
         Section section1 = new Section(잠실역, 잠실새내역, 10);
         Section section2 = new Section(찰리역, 잠실나루역, 10);
         List<Section> sections = List.of(section1, section2);
-        path = ShortestPath.of(sections);
+        pathFinder = ShortestPathFinder.of(sections);
 
         // then
-        assertThatThrownBy(() -> path.findPath(잠실역, 찰리역))
+        assertThatThrownBy(() -> pathFinder.findPath(잠실역, 찰리역))
                 .isInstanceOf(NoSuchPath.class)
-                .hasMessage("존재하지 않는 경로입니다.");
+                .hasMessage("잠실역 - 찰리역은 존재하지 않는 경로입니다.");
     }
 
     @DisplayName("시작역과 도착역이 같은 경우 예외가 발생한다")
     @Test
     void findPathWithSameStation() {
         // then
-        assertThatThrownBy(() -> path.findPath(잠실역, 잠실역))
+        assertThatThrownBy(() -> pathFinder.findPath(잠실역, 잠실역))
                 .isInstanceOf(InvalidException.class)
                 .hasMessage("시작역과 도착역은 같을 수 없습니다.");
     }
@@ -72,9 +73,9 @@ class ShortestPathTest {
     @Test
     void getDistance() {
         // when
-        int distance = path.getDistance(잠실새내역, 잠실역);
+        Path path = pathFinder.findPath(잠실새내역, 잠실역);
 
         // then
-        assertThat(distance).isEqualTo(2);
+        assertThat(path.getDistance()).isEqualTo(2);
     }
 }

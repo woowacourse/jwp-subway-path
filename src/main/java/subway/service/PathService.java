@@ -5,13 +5,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.domain.Fare;
 import subway.domain.Path;
+import subway.domain.PathFinder;
 import subway.domain.Section;
-import subway.domain.ShortestPath;
 import subway.domain.Station;
 import subway.dto.request.PathRequest;
 import subway.dto.response.PathResponse;
 import subway.dto.response.PathStationResponse;
 import subway.repository.SectionRepository;
+import subway.repository.ShortestPathFinder;
 import subway.repository.StationRepository;
 
 @Service
@@ -29,17 +30,13 @@ public class PathService {
         Station sourceStation = stationRepository.findByName(pathRequest.getSourceStation());
         Station targetStation = stationRepository.findByName(pathRequest.getTargetStation());
 
-        Path path = ShortestPath.of(sections);
-        Fare fare = new Fare();
+        PathFinder pathFinder = ShortestPathFinder.of(sections);
+        Path path = pathFinder.findPath(sourceStation, targetStation);
 
-        List<Station> shortestPath = path.findPath(sourceStation, targetStation);
-        int shortestPathDistance = path.getDistance(sourceStation, targetStation);
-        int shortestPathFare = fare.calculateFare(shortestPathDistance);
-
-        List<PathStationResponse> stationResponses = shortestPath.stream()
+        List<PathStationResponse> stationResponses = path.getPath().stream()
                 .map(station -> new PathStationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, shortestPathDistance, shortestPathFare);
+        return new PathResponse(stationResponses, path.getDistance(), Fare.calculateFare(path.getDistance()));
     }
 }

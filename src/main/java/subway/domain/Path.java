@@ -2,8 +2,20 @@ package subway.domain;
 
 import java.util.List;
 
-public interface Path {
-    List<Station> findPath(Station sourceStation, Station targetStation);
+public class Path {
+    private final List<Station> path;
+    private final int distance;
 
-    int getDistance(Station sourceStation, Station targetStation);
+    public Path(List<Station> path, int distance) {
+        this.path = path;
+        this.distance = distance;
+    }
+
+    public List<Station> getPath() {
+        return path;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }

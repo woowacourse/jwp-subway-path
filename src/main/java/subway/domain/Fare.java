@@ -10,18 +10,9 @@ public class Fare {
     public static final int UNIT_OVER_50KM = 8;
     public static final int ADD_FARE = 100;
 
-    private int fare;
-
-    private Fare(int fare) {
-        this.fare = fare;
-    }
-
-    public Fare() {
-        this(DEFAULT_FARE);
-    }
-
-    public int calculateFare(int distance) {
+    public static int calculateFare(int distance) {
         validateDistance(distance);
+        int fare = DEFAULT_FARE;
 
         if (distance > 50) {
             fare = DEFAULT_FARE_OVER_50KM;
@@ -35,13 +26,13 @@ public class Fare {
         return fare;
     }
 
-    private void validateDistance(int distance) {
+    private static void validateDistance(int distance) {
         if (distance <= 0) {
             throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
-    private int calculateOverFare(int distance, int unit) {
+    private static int calculateOverFare(int distance, int unit) {
         return (int) ((Math.ceil((distance - 1) / unit) + 1) * ADD_FARE);
     }
 }
