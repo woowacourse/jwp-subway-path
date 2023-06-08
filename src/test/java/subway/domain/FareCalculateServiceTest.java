@@ -17,7 +17,7 @@ import subway.domain.fare.service.FareCalculateService;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.path.Path;
-import subway.domain.section.SectionEdge;
+import subway.jgrapht.JgraphtSectionEdge;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -48,8 +48,8 @@ public class FareCalculateServiceTest {
                 .willReturn(distance);
         given(mockPath.getSectionEdges())
                 .willReturn(List.of(
-                        new SectionEdge(null, 1L),
-                        new SectionEdge(null, 2L))
+                        new JgraphtSectionEdge(null, 1L),
+                        new JgraphtSectionEdge(null, 2L))
                 );
         given(lineRepository.findById(1L))
                 .willReturn(new Line(1L, "1호선", "color1", 0));

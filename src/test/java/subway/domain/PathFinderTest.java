@@ -13,6 +13,7 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.subway.Subway;
+import subway.jgrapht.JgraphtPathFinder;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -22,7 +23,7 @@ class PathFinderTest {
     void 최단_거리를_조회한다() {
         // given
         final Subway subway = new Subway(List.of(getSections1(), getSections2()));
-        final PathFinder pathFinder = new PathFinder(subway);
+        final PathFinder pathFinder = new JgraphtPathFinder(subway);
 
         // when
         final Path path = pathFinder.findShortestPath(new Station(1L, "잠실역"), new Station(3L, "신촌역"));

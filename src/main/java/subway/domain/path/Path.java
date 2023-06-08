@@ -1,7 +1,6 @@
 package subway.domain.path;
 
 import java.util.List;
-import subway.domain.section.SectionEdge;
 import subway.domain.station.Station;
 
 public class Path {

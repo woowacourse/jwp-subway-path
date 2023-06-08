@@ -15,6 +15,7 @@ import subway.domain.subway.Subway;
 import subway.dto.shortestpath.ShortestPathRequest;
 import subway.dto.shortestpath.ShortestPathResponse;
 import subway.dto.station.StationResponse;
+import subway.jgrapht.JgraphtPathFinder;
 
 @Transactional
 @Service
@@ -41,7 +42,7 @@ public class PathService {
                 .map(line -> sectionRepository.findByLineId(line.getId()))
                 .collect(Collectors.toList());
 
-        final PathFinder pathFinder = new PathFinder(new Subway(subway));
+        final PathFinder pathFinder = new JgraphtPathFinder(new Subway(subway));
 
         final Path path = pathFinder.findShortestPath(
                 stationRepository.findByName(request.getStartStation()),
