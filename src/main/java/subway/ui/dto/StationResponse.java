@@ -1,6 +1,6 @@
 package subway.ui.dto;
 
-import subway.domain.Station;
+import subway.service.dto.StationDto;
 
 public class StationResponse {
 
@@ -12,8 +12,8 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse of(final Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static StationResponse of(final StationDto stationDto) {
+        return new StationResponse(stationDto.getId(), stationDto.getName());
     }
 
     public Long getId() {

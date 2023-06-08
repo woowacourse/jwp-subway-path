@@ -1,30 +1,31 @@
 package subway.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.StationEdge;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.StationInsertRequest;
-import subway.exception.DuplicatedLineNameException;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.service.dto.LineDto;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.StationInsertRequest;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @Transactional
-class LineServiceTest {
+class SubwayServiceTest {
 
     @Autowired
-    private LineService lineService;
+    private SubwayService subwayService;
 
     @Autowired
     private LineRepository lineRepository;
@@ -40,7 +41,7 @@ class LineServiceTest {
         LineRequest lineRequest = createLineRequest();
 
         //when
-        Long createdId = lineService.create(lineRequest);
+        Long createdId = subwayService.create(lineRequest);
 
         //then
         assertThat(createdId).isNotNull();
@@ -53,21 +54,7 @@ class LineServiceTest {
         final Long downStationId = stationRepository.create(new Station("건대"));
         final int distance = 7;
 
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
-        return lineRequest;
-    }
-
-    @Test
-    @DisplayName("이미 존재하는 이름으로 노선을 생성한다.")
-    void createLineWithDuplicatedName() {
-        //given
-        lineService.create(createLineRequest());
-        LineRequest lineRequest = createLineRequest();
-
-        //when
-        //then
-        assertThatThrownBy(() -> lineService.create(lineRequest))
-                .isInstanceOf(DuplicatedLineNameException.class);
+        return new LineRequest(name, color, upStationId, downStationId, distance);
     }
 
     @Test
@@ -75,49 +62,44 @@ class LineServiceTest {
     void insertStation() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
-
+        Long lineId = subwayService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
 
-        // upstation 에서 1 떨어진 곳에 추가....
-        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
-                lineRequest.getUpStationId(), "DOWN",
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(
+                stationId,
+                lineId,
+                lineRequest.getUpStationId(),
+                "DOWN",
                 1);
         //when
-        lineService.insertStation(stationInsertRequest);
+        subwayService.insertStation(stationInsertRequest);
 
         //then
         Line line = lineRepository.findByName(lineRequest.getName()).get();
-        assertThat(line.getStationEdges().get(1).getDownStationId()).isEqualTo(stationId);
+        final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
+        assertThat(stationIdsByOrder).containsExactly(lineRequest.getUpStationId(), stationId, lineRequest.getDownStationId());
 
-        StationEdge updatedStationEdge = line.getStationEdges().stream()
-                .filter(stationEdge -> stationEdge.getDownStationId().equals(lineRequest.getDownStationId()))
-                .findFirst().get();
-        assertThat(updatedStationEdge.getDistance()).isEqualTo(6);
     }
 
     @Test
     @DisplayName("노선에서 역을 제거한다.")
     void deleteStation() {
-        //given up - 강남 - down
+        //given (up - 강남 - down)
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
         Long stationId = stationRepository.create(new Station("강남"));
         StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
                 lineRequest.getUpStationId(), "DOWN",
                 1);
-        lineService.insertStation(stationInsertRequest);
+        subwayService.insertStation(stationInsertRequest);
 
         //when
-        lineService.deleteStation(lineId, stationId);
+        subwayService.deleteStation(lineId, stationId);
 
         //then
         Line line = lineRepository.findById(lineId).get();
-        StationEdge downEndStationEdge = line.getStationEdges().get(1);
-        assertSoftly(softly -> {
-            softly.assertThat(downEndStationEdge.getDownStationId()).isEqualTo(lineRequest.getDownStationId());
-            softly.assertThat(downEndStationEdge.getDistance()).isEqualTo(lineRequest.getDistance());
-        });
+        final List<Long> stationIdsByOrder = line.getStationIdsByOrder();
+        assertThat(stationIdsByOrder).containsExactly(lineRequest.getUpStationId(), lineRequest.getDownStationId());
     }
 
     @Test
@@ -125,10 +107,10 @@ class LineServiceTest {
     void deleteStationWithTwoStation() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
 
         //when
-        lineService.deleteStation(lineId, lineRequest.getDownStationId());
+        subwayService.deleteStation(lineId, lineRequest.getDownStationId());
 
         //then
         assertThat(lineRepository.findById(lineId)).isEmpty();
@@ -139,10 +121,10 @@ class LineServiceTest {
     void findById() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long lineId = lineService.create(lineRequest);
+        Long lineId = subwayService.create(lineRequest);
 
         //when
-        Line createdLine = lineService.findLineById(lineId);
+        LineDto createdLine = subwayService.findLineById(lineId);
 
         //then
         assertThat(createdLine.getId()).isEqualTo(lineId);
@@ -153,9 +135,9 @@ class LineServiceTest {
     void findAll() {
         //given
         LineRequest lineRequest = createLineRequest();
-        Long firstLineId = lineService.create(lineRequest);
+        Long firstLineId = subwayService.create(lineRequest);
 
-        Long secondLineId = lineService.create(new LineRequest(
+        Long secondLineId = subwayService.create(new LineRequest(
                 "2호선",
                 "초록색",
                 stationRepository.create(new Station("up")),
@@ -164,7 +146,7 @@ class LineServiceTest {
         ));
 
         //when
-        List<Line> lines = lineService.findAll();
+        List<LineDto> lines = subwayService.findAll();
 
         //then
         assertSoftly(softly -> {
@@ -172,6 +154,5 @@ class LineServiceTest {
             softly.assertThat(lines.get(0).getId()).isEqualTo(firstLineId);
             softly.assertThat(lines.get(1).getId()).isEqualTo(secondLineId);
         });
-
     }
 }

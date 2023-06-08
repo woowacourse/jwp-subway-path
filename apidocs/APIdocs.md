@@ -113,3 +113,51 @@ GET http://localhost:8080/lines
   ]
 }
 ```
+
+### 경로 조회 API
+
+request
+```http request
+GET http://localhost:8080/path?startstation={startStationId}&destinationstation={destinationStationId}
+```
+
+response body
+
+```json
+{
+  "distance": 16,
+  "fare": 1450,
+  "path": [
+    {
+      "id": 1,
+      "name": "1호선",
+      "lineColor": "blue",
+      "stations": [
+        {
+          "id": 1,
+          "name": "잠실"
+        },
+        {
+          "id": 2,
+          "name": "건대입구"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "2호선",
+      "lineColor": "green",
+      "stations": [
+        {
+          "id": 2,
+          "name": "건대입구"
+        },
+        {
+          "id": 3,
+          "name": "뚝섬유원지"
+        }
+      ]
+    }
+  ]
+}
+```

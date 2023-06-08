@@ -1,6 +1,6 @@
 package subway.entity;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationEntity implements Entity{
 

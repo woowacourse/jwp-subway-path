@@ -2,11 +2,13 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.exception.DuplicatedStationNameException;
 import subway.repository.StationRepository;
+import subway.service.dto.StationDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -28,12 +30,16 @@ public class StationService {
     }
 
     @Transactional
-    public List<Station> findById(final List<Long> ids) {
-        return stationRepository.findById(ids);
+    public List<StationDto> findById(final List<Long> ids) {
+        return stationRepository.findById(ids).stream()
+                .map(StationDto::of)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Transactional
-    public List<Station> findAll() {
-        return stationRepository.findAll();
+    public List<StationDto> findAll() {
+        return stationRepository.findAll().stream()
+                .map(StationDto::of)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

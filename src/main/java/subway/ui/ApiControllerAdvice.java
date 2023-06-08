@@ -17,7 +17,7 @@ import subway.exception.StationNotFoundException;
 import subway.ui.dto.ErrorResponse;
 
 @RestControllerAdvice(
-        assignableTypes = {LineController.class, StationController.class}
+        assignableTypes = {LineController.class, StationController.class, PathController.class}
 )
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 

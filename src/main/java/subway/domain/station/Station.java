@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.Objects;
 
@@ -16,6 +16,10 @@ public class Station {
 
     public Station(final String name) {
         this.name = name;
+    }
+
+    public boolean isSameName(final String name) {
+        return this.name.equals(name);
     }
 
     public Long getId() {

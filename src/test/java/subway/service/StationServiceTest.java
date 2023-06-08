@@ -1,20 +1,24 @@
 package subway.service;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.station.Station;
+import subway.exception.DuplicatedStationNameException;
+import subway.repository.StationRepository;
+import subway.service.dto.StationDto;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Station;
-import subway.exception.DuplicatedStationNameException;
-import subway.repository.StationRepository;
-
 @SpringBootTest
+@AutoConfigureTestDatabase
 @Transactional
 class StationServiceTest {
 
@@ -59,7 +63,7 @@ class StationServiceTest {
         Long id3 = stationRepository.create(new Station("건대"));
 
         //when
-        List<Station> stations = stationService.findById(List.of(id1, id2, id3));
+        List<StationDto> stations = stationService.findById(List.of(id1, id2, id3));
 
         //then
         assertSoftly(softly -> {

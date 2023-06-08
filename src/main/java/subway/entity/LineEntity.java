@@ -1,6 +1,6 @@
 package subway.entity;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class LineEntity implements Entity{
 

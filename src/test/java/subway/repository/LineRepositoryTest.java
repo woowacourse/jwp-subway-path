@@ -9,10 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.StationEdgeDao;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.domain.LineDirection;
-import subway.domain.Station;
-import subway.domain.StationEdge;
+import subway.domain.station.Station;
 
 import java.util.Optional;
 
@@ -84,7 +83,7 @@ class LineRepositoryTest {
         int originalSize = createdLine.getStationEdges().size();
 
         Long middleStationId = stationRepository.create(new Station("middle"));
-        Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
+        Long downStationId = createdLine.getStationEdges().findDownEndStationId();
         createdLine.insertStation(middleStationId, downStationId, LineDirection.UP, 2);
 
         //when
@@ -92,7 +91,7 @@ class LineRepositoryTest {
 
         //then
         Line actualLine = lineRepository.findById(createdLine.getId()).get();
-        assertThat(actualLine.getStationEdges()).hasSize(originalSize + 1);
+        assertThat(actualLine.getStationEdges().toSet()).hasSize(originalSize + 1);
     }
 
     @Test
@@ -103,21 +102,20 @@ class LineRepositoryTest {
         Long middleStationId = stationRepository.findByName("middle").get().getId();
 
         //when
-        line.deleteStation(middleStationId);
+        line.removeStation(middleStationId);
         lineRepository.updateStationEdges(line);
 
         //then
         Line actualLine = lineRepository.findById(line.getId()).get();
-        StationEdge seccondStationEdge = actualLine.getStationEdges().get(1);
-        assertThat(seccondStationEdge.getDownStationId()).isNotEqualTo(middleStationId);
+        assertThat(actualLine.getStationEdges().toSet()).hasSize(1);
     }
 
     private Line createLineWithThreeStation() {
         Line createdLine = createLineWithTwoStation();
 
         Long middleStationId = stationRepository.create(new Station("middle"));
-        Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        createdLine.insertStation(middleStationId, downStationId, LineDirection.UP, 2);
+        Long downsEndStationId = createdLine.getStationEdges().findDownEndStationId();
+        createdLine.insertStation(middleStationId, downsEndStationId, LineDirection.UP, 2);
         lineRepository.updateStationEdges(createdLine);
         return createdLine;
     }

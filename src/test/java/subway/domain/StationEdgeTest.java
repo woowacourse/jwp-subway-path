@@ -1,44 +1,99 @@
 package subway.domain;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.edge.StationEdge;
+import subway.exception.IllegalStationEdgeException;
+
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StationEdgeTest {
+
     @Test
-    @DisplayName("역 두 개와 거리로 생성한다.")
-    void create() {
-        //given
-        int distance = 5;
-        Long stationId = 1L;
+    @DisplayName("두 역의 아이디를 통해 구간을 생성한다.")
+    void construct_test() {
+        // given
+        final StationEdge stationEdge = new StationEdge(1L, 2L, 5);
 
-        //when
-        final var stationEdge = new StationEdge(stationId, distance);
-
-        //then
-        Assertions.assertThat(stationEdge)
-                .isInstanceOf(StationEdge.class)
-                .isNotNull();
+        // when
+        // then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(stationEdge.getUpStationId()).isEqualTo(1L);
+            softly.assertThat(stationEdge.getDownStationId()).isEqualTo(2L);
+            softly.assertThat(stationEdge.getDistance()).isEqualTo(5);
+        });
     }
 
     @Test
-    @DisplayName("거리와 역 아이디로 엣지를 쪼갠다.")
-    void split() {
-        //given
-        StationEdge stationEdge = new StationEdge(1L, 5);
-        //when
-        List<StationEdge> split = stationEdge.splitFromDownStation(2L, 3);
-        //then
-        assertSoftly(
-                softly -> {
-                    softly.assertThat(split.get(0).getDownStationId()).isEqualTo(2L);
-                    softly.assertThat(split.get(0).getDistance()).isEqualTo(2);
-                    softly.assertThat(split.get(1).getDownStationId()).isEqualTo(1L);
-                    softly.assertThat(split.get(1).getDistance()).isEqualTo(3);
-                }
-        );
+    @DisplayName("상행과 하행역이 동일하면 예외를 발생시킨다.")
+    void station_id_validation_test() {
+        assertThatThrownBy(() -> new StationEdge(1L, 1L, 5))
+                .isInstanceOf(IllegalStationEdgeException.class)
+                .hasMessageContaining(StationEdge.SAME_STATION_ID_EXCEPTION_MESSAGE);
+    }
+
+    @Test
+    @DisplayName("역간거리가 0이하이면 예외를 발생시킨다.")
+    void distance_validation_test() {
+        assertThatThrownBy(() -> new StationEdge(1L, 2L, 0))
+                .isInstanceOf(IllegalStationEdgeException.class)
+                .hasMessageContaining(StationEdge.INVALID_DISTANCE_EXCEPTION_MESSAGE);
+    }
+
+    @Test
+    @DisplayName("구간을 나눠 새로운 2개의 구간으로 나눈다. - 상행기준")
+    void split_from_up_test() {
+        // given
+        final StationEdge originalStation = new StationEdge(1L, 2L, 8);
+
+        // when
+        final Set<StationEdge> splitStationEdges = originalStation.splitFromUp(3L, 3);
+
+        // then
+        final int upEdgeDistance = splitStationEdges.stream()
+                .filter(stationEdge -> stationEdge.getUpStationId() == 1L && stationEdge.getDownStationId() == 3L)
+                .mapToInt(StationEdge::getDistance)
+                .findFirst()
+                .getAsInt();
+        final int downEdgeDistance = splitStationEdges.stream()
+                .filter(stationEdge -> stationEdge.getUpStationId() == 3L && stationEdge.getDownStationId() == 2L)
+                .mapToInt(StationEdge::getDistance)
+                .findFirst()
+                .getAsInt();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(upEdgeDistance).isEqualTo(3);
+            softly.assertThat(downEdgeDistance).isEqualTo(5);
+        });
+    }
+
+    @Test
+    @DisplayName("구간을 나눠 새로운 2개의 구간으로 나눈다. - 하행기준")
+    void split_from_down_test() {
+        // given
+        final StationEdge originalStation = new StationEdge(1L, 2L, 8);
+
+        // when
+        final Set<StationEdge> splitStationEdges = originalStation.splitFromDown(3L, 3);
+
+        // then
+        final int upEdgeDistance = splitStationEdges.stream()
+                .filter(stationEdge -> stationEdge.getUpStationId() == 1L && stationEdge.getDownStationId() == 3L)
+                .mapToInt(StationEdge::getDistance)
+                .findFirst()
+                .getAsInt();
+        final int downEdgeDistance = splitStationEdges.stream()
+                .filter(stationEdge -> stationEdge.getUpStationId() == 3L && stationEdge.getDownStationId() == 2L)
+                .mapToInt(StationEdge::getDistance)
+                .findFirst()
+                .getAsInt();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(upEdgeDistance).isEqualTo(5);
+            softly.assertThat(downEdgeDistance).isEqualTo(3);
+        });
     }
 }
