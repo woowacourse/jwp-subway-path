@@ -95,8 +95,8 @@
   - [x] 도메인에 외부 라이브러리 의존 제거
 - [x] Fare
   - [x] 계산 로직 내부 0을 반환하는 로직 리팩토링
-- [ ] 예외 처리
-  - [ ] GlobalControllerAdvice Logger 사용
+- [x] 예외 처리
+  - [x] GlobalControllerAdvice Logger 사용
   - [x] 예외 처리 시 메시지 자세한 정보 나타내도록 변경
   - [x] Response 분리
 - [x] 코드 스타일
