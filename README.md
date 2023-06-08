@@ -93,14 +93,14 @@
 - [ ] Path
   - [ ] DijkstraShortestPath 재사용
   - [ ] 외부 라이브러리 의존 제거
-- [ ] Fare
-  - [ ] 계산 로직 내부 0을 반환하는 로직 리팩토링
+- [x] Fare
+  - [x] 계산 로직 내부 0을 반환하는 로직 리팩토링
 - [ ] 예외 처리
   - [ ] GlobalControllerAdvice Logger 사용
   - [ ] 예외 처리 시 메시지 자세한 정보 나타내도록 변경
   - [ ] StationResponse
-- [ ] 코드 스타일
-  - [ ] 메서드 순서 정렬
+- [x] 코드 스타일
+  - [x] 메서드 순서 정렬
 
 ---
 
