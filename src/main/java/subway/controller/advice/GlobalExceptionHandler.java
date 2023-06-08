@@ -20,14 +20,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidException.class)
     public ResponseEntity<ExceptionResponse> invalidExceptionHandler(final InvalidException e) {
-        log.warn("[ERROR] Invalid Exception, Message = {}", e.getMessage());
+        log.warn("[ERROR] Invalid Exception, Message = {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> notFoundExceptionHandler(final NotFoundException e) {
-        log.warn("[ERROR] Not Found Exception, Message = {}", e.getMessage());
+        log.warn("[ERROR] Not Found Exception, Message = {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse.from(e.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
@@ -37,14 +37,14 @@ public class GlobalExceptionHandler {
         String message = e.getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-        log.warn("[ERROR] Method Argument Not Valid Exception, Message = {}", e.getMessage());
+        log.warn("[ERROR] Method Argument Not Valid Exception, Message = {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(message, HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> internalServerErrorHandler(final Exception e) {
-        log.error("[ERROR] Internal Server Error, Message = {}", e.getMessage());
+        log.error("[ERROR] Internal Server Error, Message = {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ExceptionResponse.from(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
