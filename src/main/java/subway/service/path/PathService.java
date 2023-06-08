@@ -1,4 +1,4 @@
-package subway.service.shortestpath;
+package subway.service.path;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.fare.service.FareCalculateService;
 import subway.domain.line.LineRepository;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
 import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
-import subway.domain.shortestpath.ShortestPath;
-import subway.domain.shortestpath.ShortestPathFinder;
 import subway.domain.station.StationRepository;
 import subway.domain.subway.Subway;
 import subway.dto.shortestpath.ShortestPathRequest;
@@ -18,17 +18,17 @@ import subway.dto.station.StationResponse;
 
 @Transactional
 @Service
-public class ShortestPathService {
+public class PathService {
 
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
     private final FareCalculateService fareCalculateService;
 
-    public ShortestPathService(final LineRepository lineRepository,
-                               final SectionRepository sectionRepository,
-                               final StationRepository stationRepository,
-                               final FareCalculateService fareCalculateService) {
+    public PathService(final LineRepository lineRepository,
+                       final SectionRepository sectionRepository,
+                       final StationRepository stationRepository,
+                       final FareCalculateService fareCalculateService) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
@@ -41,17 +41,17 @@ public class ShortestPathService {
                 .map(line -> sectionRepository.findByLineId(line.getId()))
                 .collect(Collectors.toList());
 
-        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(new Subway(subway));
+        final PathFinder pathFinder = new PathFinder(new Subway(subway));
 
-        final ShortestPath shortestPath = shortestPathFinder.find(
+        final Path path = pathFinder.findShortestPath(
                 stationRepository.findByName(request.getStartStation()),
                 stationRepository.findByName(request.getEndStation())
         );
 
-        final List<StationResponse> stations = shortestPath.getStations().stream()
+        final List<StationResponse> stations = path.getStations().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        final int fare = fareCalculateService.calculate(shortestPath, request.getAge());
+        final int fare = fareCalculateService.calculate(path, request.getAge());
 
         return new ShortestPathResponse(stations, fare);
     }

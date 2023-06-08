@@ -1,14 +1,15 @@
-package subway.domain.shortestpath;
+package subway.domain.path;
 
 import java.util.List;
+import subway.domain.section.SectionEdge;
 import subway.domain.station.Station;
 
-public class ShortestPath {
+public class Path {
 
     private final List<Station> stations;
     private final List<SectionEdge> sectionEdges;
 
-    public ShortestPath(List<Station> stations, List<SectionEdge> sectionEdges) {
+    public Path(List<Station> stations, List<SectionEdge> sectionEdges) {
         this.stations = stations;
         this.sectionEdges = sectionEdges;
     }

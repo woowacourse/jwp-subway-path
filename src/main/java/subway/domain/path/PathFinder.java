@@ -1,24 +1,25 @@
-package subway.domain.shortestpath;
+package subway.domain.path;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.section.Section;
+import subway.domain.section.SectionEdge;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.subway.Subway;
 
-public class ShortestPathFinder {
+public class PathFinder {
 
     private final Subway subway;
 
-    public ShortestPathFinder(final Subway subway) {
+    public PathFinder(final Subway subway) {
         this.subway = subway;
     }
 
-    public ShortestPath find(final Station start, final Station end) {
+    public Path findShortestPath(final Station start, final Station end) {
         final GraphPath<Station, SectionEdge> path = initShortestPath().getPath(start, end);
-        return new ShortestPath(path.getVertexList(), path.getEdgeList());
+        return new Path(path.getVertexList(), path.getEdgeList());
     }
 
     private DijkstraShortestPath<Station, SectionEdge> initShortestPath() {

@@ -16,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.fare.service.FareCalculateService;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.shortestpath.SectionEdge;
-import subway.domain.shortestpath.ShortestPath;
+import subway.domain.path.Path;
+import subway.domain.section.SectionEdge;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -43,10 +43,10 @@ public class FareCalculateServiceTest {
                                    final int age,
                                    final int expectedFare) {
         // given
-        final ShortestPath mockShortestPath = mock(ShortestPath.class);
-        given(mockShortestPath.getDistance())
+        final Path mockPath = mock(Path.class);
+        given(mockPath.getDistance())
                 .willReturn(distance);
-        given(mockShortestPath.getSectionEdges())
+        given(mockPath.getSectionEdges())
                 .willReturn(List.of(
                         new SectionEdge(null, 1L),
                         new SectionEdge(null, 2L))
@@ -57,7 +57,7 @@ public class FareCalculateServiceTest {
                 .willReturn(new Line(2L, "2호선", "color2", maxAdditionalFare));
 
         // when
-        final int actual = fareCalculateService.calculate(mockShortestPath, age);
+        final int actual = fareCalculateService.calculate(mockPath, age);
 
         // then
         assertThat(actual).isEqualTo(expectedFare);

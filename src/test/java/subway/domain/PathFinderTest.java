@@ -7,34 +7,34 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
-import subway.domain.shortestpath.ShortestPath;
-import subway.domain.shortestpath.ShortestPathFinder;
 import subway.domain.station.Station;
 import subway.domain.subway.Subway;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class ShortestPathFinderTest {
+class PathFinderTest {
 
     @Test
     void 최단_거리를_조회한다() {
         // given
         final Subway subway = new Subway(List.of(getSections1(), getSections2()));
-        final ShortestPathFinder shortestPathFinder = new ShortestPathFinder(subway);
+        final PathFinder pathFinder = new PathFinder(subway);
 
         // when
-        final ShortestPath shortestPath = shortestPathFinder.find(new Station(1L, "잠실역"), new Station(3L, "신촌역"));
+        final Path path = pathFinder.findShortestPath(new Station(1L, "잠실역"), new Station(3L, "신촌역"));
 
         // then
         final List<Station> expectedStations = List.of(new Station(1L, "잠실역"),
                 new Station(2L, "아현역"),
                 new Station(3L, "신촌역"));
         assertAll(
-                () -> assertThat(shortestPath.getStations()).usingRecursiveComparison()
+                () -> assertThat(path.getStations()).usingRecursiveComparison()
                         .isEqualTo(expectedStations),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(3L)
+                () -> assertThat(path.getDistance()).isEqualTo(3L)
         );
     }
 

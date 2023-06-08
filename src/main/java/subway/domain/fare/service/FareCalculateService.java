@@ -6,7 +6,7 @@ import subway.domain.fare.DistanceFarePolicy;
 import subway.domain.fare.LineFarePolicy;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.shortestpath.ShortestPath;
+import subway.domain.path.Path;
 
 @Component
 public class FareCalculateService {
@@ -19,9 +19,9 @@ public class FareCalculateService {
         this.lineRepository = lineRepository;
     }
 
-    public int calculate(final ShortestPath shortestPath, final int age) {
-        final Long distance = shortestPath.getDistance();
-        final int maxAdditionalFare = getMaxAdditionalFare(shortestPath);
+    public int calculate(final Path path, final int age) {
+        final Long distance = path.getDistance();
+        final int maxAdditionalFare = getMaxAdditionalFare(path);
 
         final DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy();
         final LineFarePolicy lineFarePolicy = new LineFarePolicy();
@@ -36,8 +36,8 @@ public class FareCalculateService {
         return calculatedFare;
     }
 
-    private int getMaxAdditionalFare(final ShortestPath shortestPath) {
-        return shortestPath.getSectionEdges().stream()
+    private int getMaxAdditionalFare(final Path path) {
+        return path.getSectionEdges().stream()
                 .mapToInt(sectionEdge -> {
                     final Long lineId = sectionEdge.getLineId();
                     final Line line = lineRepository.findById(lineId);

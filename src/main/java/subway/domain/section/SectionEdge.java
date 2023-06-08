@@ -1,7 +1,6 @@
-package subway.domain.shortestpath;
+package subway.domain.section;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import subway.domain.section.Section;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
