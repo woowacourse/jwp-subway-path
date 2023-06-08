@@ -81,7 +81,7 @@ class SectionsTest {
             // then
             assertThatThrownBy(() -> sections.addSection(newSection))
                     .isInstanceOf(DuplicateException.class)
-                    .hasMessage("이미 연결되어 있는 구간입니다.");
+                    .hasMessage("연결되어 있는 구간입니다.");
         }
 
         @DisplayName("새로운 B-D 구간이 B-C 사이에 추가될 때 B-D 구간의 거리가 B-C 거리보다 크거나 같으면 예외가 발생한다.")

@@ -8,7 +8,7 @@ import subway.dao.entity.StationEntity;
 import subway.domain.Station;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
-import subway.exception.NoSuchException;
+import subway.exception.NoSuchStation;
 
 @Repository
 public class StationRepository {
@@ -42,7 +42,7 @@ public class StationRepository {
             return new Station(stationEntity.getId(), stationEntity.getName());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new NoSuchException(ErrorCode.NO_SUCH_STATION);
+            throw new NoSuchStation(ErrorCode.NO_SUCH_STATION, name);
         }
     }
 }

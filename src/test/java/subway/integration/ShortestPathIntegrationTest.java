@@ -104,7 +104,7 @@ public class ShortestPathIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().get("message").equals("존재하지 않는 역입니다.")).isTrue()
+                () -> assertThat(response.body().jsonPath().get("message").equals("베로역은 존재하지 않는 역입니다.")).isTrue()
         );
     }
 

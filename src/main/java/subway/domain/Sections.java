@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
-import subway.exception.NoSuchException;
+import subway.exception.NoSuchStation;
 
 public class Sections {
     private static final int TERMINAL_COUNT = 1;
@@ -166,12 +166,12 @@ public class Sections {
         Section backSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
+                .orElseThrow(() -> new NoSuchStation(ErrorCode.NO_SUCH_STATION, deletedStation.getName()));
 
         Section frontSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
+                .orElseThrow(() -> new NoSuchStation(ErrorCode.NO_SUCH_STATION, deletedStation.getName()));
 
         Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 
