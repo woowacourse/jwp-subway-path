@@ -16,27 +16,32 @@ import java.util.Optional;
 
 @Component
 public class LineDao {
+    public static final String COLUMN_LABEL_ID = "id";
+    public static final String COLUMN_LABEL_NAME = "name";
+    public static final String COLUMN_LABEL_COLOR = "color";
+
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
+                    rs.getLong(COLUMN_LABEL_ID),
+                    rs.getString(COLUMN_LABEL_NAME),
+                    rs.getString(COLUMN_LABEL_COLOR)
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns(COLUMN_LABEL_ID);
     }
 
     public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put(COLUMN_LABEL_NAME, line.getName());
+        params.put(COLUMN_LABEL_COLOR, line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new LineEntity(lineId, line.getName(), line.getColor());

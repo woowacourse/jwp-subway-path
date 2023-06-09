@@ -16,13 +16,14 @@ import java.util.Optional;
 
 @Component
 public class StationDao {
+    public static final String COLUMN_LABEL_ID = "id";
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
-                    rs.getLong("id"),
+                    rs.getLong(COLUMN_LABEL_ID),
                     rs.getString("name")
             );
 
@@ -31,7 +32,7 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns(COLUMN_LABEL_ID);
     }
 
     public StationEntity insert(final Station station) {
