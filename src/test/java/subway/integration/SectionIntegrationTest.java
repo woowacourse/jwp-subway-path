@@ -11,15 +11,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.SectionCreateRequest;
-import subway.dto.SectionDeleteRequest;
-import subway.dto.StationCreateRequest;
+import subway.dto.request.LineRequest;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.request.SectionDeleteRequest;
+import subway.dto.request.StationCreateRequest;
 import subway.integration.step.LineStep;
 import subway.integration.step.SectionStep;
 import subway.integration.step.StationStep;
 
-@DisplayName("지하철 구간 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionIntegrationTest extends IntegrationTest {
     @Override
@@ -76,7 +75,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().get("message").equals("존재하지 않는 역입니다.")).isTrue()
+                () -> assertThat(response.body().jsonPath().get("message").equals("봉천역은 존재하지 않는 역입니다.")).isTrue()
         );
     }
 
@@ -128,7 +127,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.body().jsonPath().get("message").equals("존재하지 않는 역입니다.")).isTrue()
+                () -> assertThat(response.body().jsonPath().get("message").equals("봉천역은 존재하지 않는 역입니다.")).isTrue()
         );
     }
 }

@@ -2,7 +2,7 @@ package subway.integration.step;
 
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
-import subway.dto.StationCreateRequest;
+import subway.dto.request.StationCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StationStep {

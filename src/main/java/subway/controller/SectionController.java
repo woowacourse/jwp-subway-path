@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.SectionCreateRequest;
-import subway.dto.SectionDeleteRequest;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.request.SectionDeleteRequest;
 import subway.service.SectionService;
 
 @RestController

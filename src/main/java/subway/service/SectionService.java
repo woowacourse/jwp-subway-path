@@ -1,103 +1,49 @@
 package subway.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.dao.entity.LineEntity;
-import subway.dao.entity.SectionEntity;
-import subway.dao.entity.StationEntity;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.SectionCreateRequest;
-import subway.dto.SectionDeleteRequest;
-import subway.exception.ErrorCode;
-import subway.exception.NoSuchException;
+import subway.dto.request.SectionCreateRequest;
+import subway.dto.request.SectionDeleteRequest;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 @Service
 @Transactional
 public class SectionService {
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+    public SectionService(LineRepository lineRepository, SectionRepository sectionRepository,
+                          StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
     }
 
     public Long save(SectionCreateRequest sectionCreateRequest) {
-        Long lineId = sectionCreateRequest.getLineId();
-        Line line = convertToLineByEntity(lineId);
-        StationEntity upStationEntity = findStationByName(sectionCreateRequest.getUpStation());
-        StationEntity downStationEntity = findStationByName(sectionCreateRequest.getDownStation());
-        line.addSection(
-                new Station(upStationEntity.getId(), upStationEntity.getName()),
-                new Station(downStationEntity.getId(), downStationEntity.getName()),
-                sectionCreateRequest.getDistance()
-        );
+        Line line = lineRepository.findById(sectionCreateRequest.getLineId());
+        Station upStation = stationRepository.findByName(sectionCreateRequest.getUpStation());
+        Station downStation = stationRepository.findByName(sectionCreateRequest.getDownStation());
 
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.batchSave(getModifySections(lineId, line));
+        line.addSection(upStation, downStation, sectionCreateRequest.getDistance());
 
-        return lineId;
+        sectionRepository.deleteByLineId(line.getId());
+        sectionRepository.batchSave(line);
+
+        return line.getId();
     }
 
     public void delete(SectionDeleteRequest sectionDeleteRequest) {
-        Long lineId = sectionDeleteRequest.getLineId();
-        Line line = convertToLineByEntity(lineId);
-        StationEntity stationEntity = findStationByName(sectionDeleteRequest.getName());
-        line.deleteSection(new Station(stationEntity.getId(), stationEntity.getName()));
+        Line line = lineRepository.findById(sectionDeleteRequest.getLineId());
+        Station station = stationRepository.findByName(sectionDeleteRequest.getName());
 
-        sectionDao.deleteByLineId(lineId);
-        sectionDao.batchSave(getModifySections(lineId, line));
-    }
+        line.deleteSection(station);
 
-    private List<SectionEntity> getModifySections(Long lineId, Line line) {
-        return line.getSectionsByList().stream()
-                .map(section -> new SectionEntity(
-                        section.getUpStation().getId(),
-                        section.getDownStation().getId(),
-                        lineId,
-                        section.getDistance()))
-                .collect(Collectors.toList());
-    }
-
-    private StationEntity findStationByName(String stationName) {
-        try {
-            return stationDao.findByName(stationName);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new NoSuchException(ErrorCode.NO_SUCH_STATION);
-        }
-    }
-
-    private Line convertToLineByEntity(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
-        List<Section> sections = convertToSectionByEntity(lineId);
-
-        return Line.of(lineEntity.getName(), sections);
-    }
-
-    private List<Section> convertToSectionByEntity(Long id) {
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
-        Map<Long, String> stationEntities = stationDao.findAll().stream()
-                .collect(Collectors.toMap(
-                        StationEntity::getId,
-                        StationEntity::getName)
-                );
-
-        return sectionEntities.stream()
-                .map(entity -> new Section(
-                        new Station(entity.getUpStationId(), stationEntities.get(entity.getUpStationId())),
-                        new Station(entity.getDownStationId(), stationEntities.get(entity.getDownStationId())),
-                        entity.getDistance()
-                )).collect(Collectors.toList());
+        sectionRepository.deleteByLineId(line.getId());
+        sectionRepository.batchSave(line);
     }
 }

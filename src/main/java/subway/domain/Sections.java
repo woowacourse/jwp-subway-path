@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
-import subway.exception.NoSuchException;
+import subway.exception.NoSuchStation;
 
 public class Sections {
     private static final int TERMINAL_COUNT = 1;
@@ -24,7 +24,6 @@ public class Sections {
         for (Section section : sections) {
             sectionByUpStation.put(section.getUpStation(), section);
         }
-
         List<Section> sortedSections = new ArrayList<>();
         Station currentStation = findFirstStation(sections);
         while (sectionByUpStation.containsKey(currentStation)) {
@@ -38,7 +37,6 @@ public class Sections {
     private static Station findFirstStation(List<Section> sections) {
         List<Station> upStations = new ArrayList<>();
         List<Station> downStations = new ArrayList<>();
-
         for (Section section : sections) {
             upStations.add(section.getUpStation());
             downStations.add(section.getDownStation());
@@ -46,22 +44,6 @@ public class Sections {
         upStations.removeAll(downStations);
         return upStations.get(0);
     }
-
-    public List<Station> getStations() {
-        if (isEmpty()) {
-            return List.of();
-        }
-
-        List<Station> sortedStations = new ArrayList<>();
-        sortedStations.add(findFirstStation(sections));
-        sortedStations.addAll(
-                sections.stream()
-                        .map(Section::getDownStation)
-                        .collect(Collectors.toList())
-        );
-        return sortedStations;
-    }
-
 
     public void addSection(Section newSection) {
         if (isEmpty()) {
@@ -184,12 +166,12 @@ public class Sections {
         Section backSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
+                .orElseThrow(() -> new NoSuchStation(ErrorCode.NO_SUCH_STATION, deletedStation.getName()));
 
         Section frontSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new NoSuchException(ErrorCode.NO_SUCH_STATION));
+                .orElseThrow(() -> new NoSuchStation(ErrorCode.NO_SUCH_STATION, deletedStation.getName()));
 
         Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 
@@ -200,6 +182,21 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public List<Station> getStations() {
+        if (isEmpty()) {
+            return List.of();
+        }
+
+        List<Station> sortedStations = new ArrayList<>();
+        sortedStations.add(findFirstStation(sections));
+        sortedStations.addAll(
+                sections.stream()
+                        .map(Section::getDownStation)
+                        .collect(Collectors.toList())
+        );
+        return sortedStations;
     }
 
     public List<Section> getSections() {

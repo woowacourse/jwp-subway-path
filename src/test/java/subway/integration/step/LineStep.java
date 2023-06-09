@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
+import subway.dto.request.LineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineStep {

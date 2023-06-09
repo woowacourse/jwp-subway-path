@@ -44,6 +44,66 @@
 - [x] Test 코드 내부 테스트를 위한 사전 데이터 준비 과정의 중복 코드 제거
 - [x] Test 코드 내부 `@Nested` 어노테이션을 통해 테스트 코드 가독성 증진
 
+---
+
+## 2단계 요구사항
+
+### 프로그래밍 요구사항
+
+- [x] 데이터베이스 설정을 프로덕션과 테스트를 다르게 지정
+  - [x] 프로덕션의 데이터베이스는 로컬에 저장될 수 있도록 설정
+  - [x] 테스트용 데이터베이스는 인메모리로 동작할 수 있도록 설정
+
+### 기능 요구사항
+
+- [x] 경로 조회 API 구현
+  - [x] 출발역과 도착역 사이의 최단 거리 경로를 구하는 API 구현
+  - [x] 응답에는 최단 거리 경로와 총 거리 정보 포함한다.
+  - [x] 여러 노선을 걸처 최단 경로가 나올 수 있다.
+- [x] 요금 조회 기능 추가
+  - [x] 경로 조회 시 요금 정보를 포함하여 응답
+- [x] 요금 계산 기능 추가
+  - [x] 기본운임(10㎞ 이내): 기본운임 1,250원
+    - [x] 이용 거리 초과 시 추가운임 부과
+    - [x] 10km~50km: 5km 까지 마다 100원 추가
+    - [x] 50km 초과: 8km 까지 마다 100원 추가
+
+### 리팩토링 목록
+
+- [x] Repository 생성
+  - [x] LineRepository
+  - [x] SectionRepository
+  - [x] StationRepository
+- [x] 최단 경로 조회 API
+  - [x] url 변경
+  - [x] 응답 형식 변경
+- [x] 최단 경로 조회 기능
+  - [x] getDijkstraShortestPath 메소드 추상화
+  - [x] getDijkstraShortestPath 메소드 sourceStation과 targetStation이 같은 경우 예외 처리 기능 구현
+  - [x] Vertex로 역(Station) 객체 사용하도록 리팩토링
+  - [x] Section 도메인에 외부 라이브러리에 대한 의존 끊기
+- [x] 요금 계산 기능
+  - [x] 요금 계산 기능 책임 분리
+  - [x] 거리가 0 이하일 때 예외 처리 기능 구현
+- [x] 테스트
+  - [x] Fare 테스트 추가
+  - [x] ShortestPath 테스트 추가
+  - [x] ShortestPath Integration 테스트 추가
+
+- [x] Path
+  - [x] DijkstraShortestPath 재사용
+  - [x] 도메인에 외부 라이브러리 의존 제거
+- [x] Fare
+  - [x] 계산 로직 내부 0을 반환하는 로직 리팩토링
+- [x] 예외 처리
+  - [x] GlobalControllerAdvice Logger 사용
+  - [x] 예외 처리 시 메시지 자세한 정보 나타내도록 변경
+  - [x] Response 분리
+- [x] 코드 스타일
+  - [x] 메서드 순서 정렬거
+
+---
+
 ## API 명세서
 
 ### 노선 API
@@ -66,6 +126,12 @@
 |--------|-----------|-------------|
 | POST   | /sections | 노선에 역 추가    |
 | DELETE | /sections | 노선에 역 삭제    |
+
+### 경로 조회 API
+
+| Method | URI             | Description   |
+|--------|-----------------|---------------|
+| GET    | /paths/shortest | 최단 경로 및 요금 조회 |
 
 ---
 
@@ -182,6 +248,8 @@ Content-Type: application/json
 Location: /stations/1
 ```
 
+---
+
 ### Section API 요청 / 응답 예시
 
 #### POST : 노선에 역 추가
@@ -225,4 +293,44 @@ Host: localhost:8080
 
 ``` http request
 HTTP/1.1 204 No Content
+```
+
+---
+
+### Path API 요청 / 응답 예시
+
+#### GET : 최단 경로 및 요금 조회
+
+`Request`
+
+```http request
+GET /paths/shortestPath HTTP/1.1
+Host: localhost:8080
+
+{
+    "sourceStation":"주노역",
+    "targetStation":"찰리역"
+}
+```
+
+`Response`
+
+``` http request
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "shortestPath": [
+        {
+            "id": 6,
+            "name": "찰리역"
+        },
+        {
+            "id": 4,
+            "name": "주노역"
+        }
+    ],
+    "distance": 9,
+    "fare": 1250
+}
 ```

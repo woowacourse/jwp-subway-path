@@ -11,10 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.StationCreateRequest;
+import subway.dto.request.StationCreateRequest;
 import subway.integration.step.StationStep;
 
-@DisplayName("지하철역 관련 기능")
 @SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
     @Override

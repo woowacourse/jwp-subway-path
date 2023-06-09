@@ -5,22 +5,13 @@ import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
 public class Station {
-    public static final int MIN_ID_VALUE = 0;
-
     private final Long id;
     private final String name;
 
     public Station(Long id, String name) {
-        validateId(id);
         validateName(name);
         this.id = id;
         this.name = name;
-    }
-
-    private void validateId(Long id) {
-        if (id <= MIN_ID_VALUE) {
-            throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_ID);
-        }
     }
 
     private void validateName(String name) {
