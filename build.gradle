@@ -11,12 +11,6 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 jacocoTestReport {
     dependsOn test
 
@@ -37,21 +31,21 @@ jacoco {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok'
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    annotationProcessor 'org.projectlombok:lombok'
-
     testImplementation 'io.rest-assured:rest-assured:4.4.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    runtimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
+
+    implementation 'mysql:mysql-connector-java:8.0.28'
 }
 
 test {
