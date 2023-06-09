@@ -1,7 +1,5 @@
 package subway.entity;
 
-//import subway.domain.Direction;
-
 public class SectionEntity {
 
     private final long lineId;
@@ -25,17 +23,6 @@ public class SectionEntity {
         this.downStationId = downStationId;
         this.distance = distance;
     }
-
-//    public static SectionEntity from(final SectionRequest sectionRequest) {
-//        final Direction direction = Direction.of(sectionRequest.getDirection());
-//        if (direction.isDown()) {
-//            return new SectionEntity(sectionRequest.getLineId(), sectionRequest.getBaseStationId(),
-//                    sectionRequest.getNewStationId(), sectionRequest.getDistance());
-//        }
-//        return new SectionEntity(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
-//                sectionRequest.getBaseStationId(),
-//                sectionRequest.getDistance());
-//    }
 
     public long getId() {
         return this.id;
