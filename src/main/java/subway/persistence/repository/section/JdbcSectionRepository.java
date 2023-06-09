@@ -1,6 +1,7 @@
 package subway.persistence.repository.section;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.section.Section;
@@ -47,8 +48,9 @@ public class JdbcSectionRepository implements SectionRepository {
     public Sections findByLineNumber(final Long lineNumber) {
         final boolean exist = lineDao.isLineNumberExist(lineNumber);
         if (exist) {
-            final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
-            return getSections(lineEntity);
+            final Long lineId = lineDao.findByLineNumber(lineNumber).getLineId();
+            final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
+            return getSections(lineId, sectionEntities);
         }
         throw new LineNotFoundException();
     }
@@ -57,16 +59,28 @@ public class JdbcSectionRepository implements SectionRepository {
     public Sections findByLineId(final Long lineId) {
         final boolean exist = lineDao.isIdExist(lineId);
         if (exist) {
-            final LineEntity lineEntity = lineDao.findById(lineId);
-            return getSections(lineEntity);
+            final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
+            return getSections(lineId, sectionEntities);
         }
         throw new LineNotFoundException();
     }
 
-    private Sections getSections(final LineEntity lineEntity) {
-        final List<SectionEntity> sectionsByLineId = sectionDao.findAllByLineId(lineEntity.getLineId());
+    @Override
+    public List<Sections> findAllByLineIds(final List<Long> lineIds) {
+        final Map<Long, List<SectionEntity>> sectionEntitiesByLineId = sectionDao.findAllByLineIds(lineIds).stream()
+                .collect(Collectors.groupingBy(SectionEntity::getLineId));
 
-        final List<Section> sections = sectionsByLineId.stream()
+        return sectionEntitiesByLineId.entrySet().stream()
+                .map(entry -> {
+                    final Long lineId = entry.getKey();
+                    final List<SectionEntity> sectionEntities = entry.getValue();
+                    return getSections(lineId, sectionEntities);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Sections getSections(final Long lineId, final List<SectionEntity> sectionEntities) {
+        final List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> {
                     final StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId());
                     final StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
@@ -77,6 +91,6 @@ public class JdbcSectionRepository implements SectionRepository {
                 })
                 .collect(Collectors.toList());
 
-        return new Sections(sections, lineEntity.getLineId());
+        return new Sections(sections, lineId);
     }
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.fare.service.FareCalculateService;
+import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.path.Path;
 import subway.domain.path.PathFinder;
@@ -38,9 +39,11 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
-        final List<Sections> subway = lineRepository.findAll().stream()
-                .map(line -> sectionRepository.findByLineId(line.getId()))
+        final List<Long> lineIds = lineRepository.findAll().stream()
+                .map(Line::getId)
                 .collect(Collectors.toList());
+
+        final List<Sections> subway = sectionRepository.findAllByLineIds(lineIds);
 
         final PathFinder pathFinder = new JgraphtPathFinder(new Subway(subway));
 
