@@ -8,14 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.repository.LineRepository;
-import subway.repository.SectionRepository;
-import subway.repository.StationRepository;
+import subway.persistence.repository.line.JdbcLineRepository;
+import subway.persistence.repository.section.JdbcSectionRepository;
+import subway.persistence.repository.station.JdbcStationRepository;
+import subway.service.section.SectionService;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -27,13 +28,13 @@ public class SectionServiceTest {
     private SectionService sectionService;
 
     @Autowired
-    private SectionRepository sectionRepository;
+    private JdbcSectionRepository sectionRepository;
 
     @Autowired
-    private LineRepository lineRepository;
+    private JdbcLineRepository lineRepository;
 
     @Autowired
-    private StationRepository stationRepository;
+    private JdbcStationRepository stationRepository;
 
     @Test
     void 역_구간_정보를_추가한다() {
@@ -42,19 +43,27 @@ public class SectionServiceTest {
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
 
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
         final List<Section> sections = sectionRepository.findByLineNumber(2L).getSections();
         final SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(sections.size()).isEqualTo(2);
 
-        softAssertions.assertThat(sections.get(0).getUpStation()).isEqualTo(new Station("잠실역"));
-        softAssertions.assertThat(sections.get(0).getDownStation()).isEqualTo(new Station("신촌역"));
+        softAssertions.assertThat(sections.get(0).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("잠실역"));
+        softAssertions.assertThat(sections.get(0).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("신촌역"));
         softAssertions.assertThat(sections.get(0).getDistance()).isEqualTo(3L);
 
-        softAssertions.assertThat(sections.get(1).getUpStation()).isEqualTo(new Station("신촌역"));
-        softAssertions.assertThat(sections.get(1).getDownStation()).isEqualTo(new Station("아현역"));
+        softAssertions.assertThat(sections.get(1).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("신촌역"));
+        softAssertions.assertThat(sections.get(1).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("아현역"));
         softAssertions.assertThat(sections.get(1).getDistance()).isEqualTo(2L);
         softAssertions.assertAll();
     }
@@ -65,17 +74,21 @@ public class SectionServiceTest {
         stationRepository.save(new Station("잠실역"));
         stationRepository.save(new Station("아현역"));
         stationRepository.save(new Station("신촌역"));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
-        sectionService.insertSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "아현역", 5L));
+        sectionService.addSection(new SectionCreateRequest(2L, "잠실역", "신촌역", 3L));
 
-        sectionService.deleteSection(new SectionDeleteRequest(2L, "신촌역"));
+        sectionService.removeSection(new SectionDeleteRequest(2L, "신촌역"));
 
         final List<Section> sections = sectionRepository.findByLineNumber(2L).getSections();
         final SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(sections.size()).isEqualTo(1);
 
-        softAssertions.assertThat(sections.get(0).getUpStation()).isEqualTo(new Station("잠실역"));
-        softAssertions.assertThat(sections.get(0).getDownStation()).isEqualTo(new Station("아현역"));
+        softAssertions.assertThat(sections.get(0).getUpStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("잠실역"));
+        softAssertions.assertThat(sections.get(0).getDownStation()).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(new Station("아현역"));
         softAssertions.assertThat(sections.get(0).getDistance()).isEqualTo(5L);
         softAssertions.assertAll();
     }

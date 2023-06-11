@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.entity.LineEntity;
+import subway.persistence.dao.line.LineDao;
+import subway.persistence.entity.line.LineEntity;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -42,7 +43,7 @@ public class LineDaoTest {
         final LineEntity lineEntity = new LineEntity(2L, "2호선", "초록색");
         final Long id = lineDao.save(lineEntity);
 
-        final boolean lineIdExist = lineDao.isLineIdExist(id);
+        final boolean lineIdExist = lineDao.isIdExist(id);
 
         assertThat(lineIdExist).isTrue();
     }

@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.entity.StationEntity;
+import subway.persistence.dao.station.StationDao;
+import subway.persistence.entity.station.StationEntity;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -32,7 +33,7 @@ public class StationDaoTest {
         final StationEntity stationEntity = new StationEntity("잠실역");
         final Long id = stationDao.save(stationEntity);
 
-        final boolean stationIdExist = stationDao.isStationIdExist(id);
+        final boolean stationIdExist = stationDao.isIdExist(id);
 
         assertThat(stationIdExist).isTrue();
     }
@@ -42,7 +43,7 @@ public class StationDaoTest {
         final StationEntity stationEntity = new StationEntity("잠실역");
         stationDao.save(stationEntity);
 
-        final boolean stationNameExist = stationDao.isStationNameExist("잠실역");
+        final boolean stationNameExist = stationDao.isNameExist("잠실역");
 
         assertThat(stationNameExist).isTrue();
     }
@@ -74,7 +75,7 @@ public class StationDaoTest {
         final StationEntity stationEntity = new StationEntity("잠실역");
         final Long id = stationDao.save(stationEntity);
 
-        final StationEntity foundStationEntity = stationDao.findByStationId(id);
+        final StationEntity foundStationEntity = stationDao.findById(id);
 
         assertThat(stationEntity.getName()).isEqualTo(foundStationEntity.getName());
     }
@@ -94,7 +95,7 @@ public class StationDaoTest {
         final StationEntity stationEntity = new StationEntity("잠실역");
         final Long id = stationDao.save(stationEntity);
 
-        stationDao.deleteByStationId(id);
+        stationDao.deleteById(id);
 
         final List<StationEntity> stationEntities = stationDao.findAll();
         assertThat(stationEntities.isEmpty()).isTrue();

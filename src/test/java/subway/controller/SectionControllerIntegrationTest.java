@@ -10,13 +10,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.dto.station.StationRequest;
-import subway.service.LineService;
-import subway.service.SectionService;
-import subway.service.StationService;
+import subway.service.line.LineService;
+import subway.service.section.SectionService;
+import subway.service.station.StationService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
@@ -43,13 +43,13 @@ class SectionControllerIntegrationTest {
     @DisplayName("Section을 생성한다.")
     void create_section_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.createLine(lineCreateRequest);
 
         StationRequest stationRequest1 = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.saveStation(stationRequest1);
-        stationService.saveStation(stationRequest2);
+        stationService.createStation(stationRequest1);
+        stationService.createStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
 
@@ -67,16 +67,16 @@ class SectionControllerIntegrationTest {
     @DisplayName("Section을 삭제한다.")
     void delete_section_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.createLine(lineCreateRequest);
 
         StationRequest stationRequest1 = new StationRequest("잠실역");
         StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.saveStation(stationRequest1);
-        stationService.saveStation(stationRequest2);
+        stationService.createStation(stationRequest1);
+        stationService.createStation(stationRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(2L, "잠실역", "잠실새내역", 3L);
-        sectionService.insertSection(sectionCreateRequest);
+        sectionService.addSection(sectionCreateRequest);
 
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(2L, "잠실역");
 
