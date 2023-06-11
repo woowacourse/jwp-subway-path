@@ -1,53 +1,58 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.entity.LineEntity;
+import subway.exception.InvalidInputException;
+import subway.repository.LineRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        Optional<Long> findLine = lineRepository.findByName(request.getName());
+
+        if (findLine.isPresent()) {
+            throw new InvalidInputException("이미 존재하는 노선입니다.");
+        }
+
+        Line line = new Line(request.getName(), request.getColor(), Collections.emptyList());
+        LineEntity lineEntity = lineRepository.saveLine(line);
+        return LineResponse.of(lineEntity);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+        List<LineEntity> persistLineEntities = lineRepository.findOnlyLines();
+
+        lineRepository.findOnlyLines();
+        return persistLineEntities.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        LineEntity persistLineEntity = lineRepository.findOnlyLineBy(id);
+        return LineResponse.of(persistLineEntity);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.updateLine(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), Collections.emptyList()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.removeSectionsByLineId(id);
+        lineRepository.removeLineById(id);
     }
-
 }

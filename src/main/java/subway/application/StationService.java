@@ -1,44 +1,69 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.strategy.DeleteSectionStrategy;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.InvalidInputException;
+import subway.repository.LineRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
-    private final StationDao stationDao;
+    private final LineRepository lineRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Optional<Long> findStation = lineRepository.findStationByName(stationRequest.getName());
+
+        if (findStation.isPresent()) {
+            throw new InvalidInputException("이미 존재하는 역입니다.");
+        }
+
+        Station station = lineRepository.saveStation(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(lineRepository.findStationById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> allStations = lineRepository.findAllStations();
 
-        return stations.stream()
+        return allStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        lineRepository.updateStation(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        List<Line> allLines = lineRepository.findAll();
+        Station deletStation = lineRepository.findStationById(id);
+
+        for (Line line : allLines) {
+            try {
+                DeleteSectionStrategy deleteSectionStrategy = line.readyToDelete(deletStation);
+                deleteSectionStrategy.execute(lineRepository);
+            } catch (InvalidInputException e) {
+                continue;
+            }
+        }
+        lineRepository.removeStationById(deletStation.getId());
     }
 }

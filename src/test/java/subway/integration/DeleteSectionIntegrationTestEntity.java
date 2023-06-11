@@ -15,7 +15,7 @@ import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 import subway.dto.StationRequest;
 
-public class DeleteSectionIntegrationTest extends IntegrationTest {
+public class DeleteSectionIntegrationTestEntity extends IntegrationTest {
     
     @BeforeEach
     void setSection() {

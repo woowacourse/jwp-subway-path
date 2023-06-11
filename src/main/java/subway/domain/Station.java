@@ -3,11 +3,9 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
+    private final Long id;
 
-    public Station() {
-    }
+    private final String name;
 
     public Station(Long id, String name) {
         this.id = id;
@@ -15,7 +13,11 @@ public class Station {
     }
 
     public Station(String name) {
-        this.name = name;
+        this(null, name);
+    }
+
+    public boolean isEqualsTo(long otherId) {
+        return this.id.equals(otherId);
     }
 
     public Long getId() {
@@ -31,7 +33,7 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
